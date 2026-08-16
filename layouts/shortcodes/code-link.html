@@ -1,0 +1,3 @@
+{{- $path := .Get "path" -}}
+{{- $label := .Get "label" | default "完成コードを開く" -}}
+<a class="lesson-code-link" href="{{ $path | relURL }}">{{ $label }}</a>

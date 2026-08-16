@@ -59,6 +59,9 @@ objectives:
 - `hint`: add a collapsible hint.
 - `solution`: add a collapsible solution.
 - `expected-output`: distinguish terminal output from source code.
+- `code-link`: link to a mounted or static code file while respecting the
+  site's `baseURL` (for example,
+  `{{</* code-link path="code/lesson-01.py" label="Open the code" */>}}`).
 
 The theme intentionally keeps lesson content in Markdown. Project-specific
 code execution and validation should remain in the consuming repository's CI.

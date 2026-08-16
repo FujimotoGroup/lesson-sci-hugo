@@ -20,7 +20,7 @@ objectives:
 「代表値」と「測定のばらつき」を分けて読めるようになります。
 {{< /goal >}}
 
-[Lesson 1の完成コードを開く](/code/lesson-01.py)
+{{< code-link path="code/lesson-01.py" label="Lesson 1の完成コードを開く" >}}
 
 ## 1. 測定データを用意する
 
