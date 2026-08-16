@@ -1,0 +1,17 @@
+{{ define "main" }}
+  <section class="section-intro">
+    <p class="eyebrow">Course</p>
+    <h1>{{ .Title }}</h1>
+    <div class="lead prose">{{ .Content }}</div>
+  </section>
+  <div class="lesson-grid">
+    {{ range .Pages.ByWeight }}
+      <a class="lesson-card" href="{{ .RelPermalink }}">
+        <span class="lesson-card__number">Lesson {{ .Params.lesson }}</span>
+        <h2>{{ .Title }}</h2>
+        <p>{{ .Params.summary | default .Summary }}</p>
+        <span class="lesson-card__meta">{{ .Params.duration | default "20 min" }} · Lessonを開く →</span>
+      </a>
+    {{ end }}
+  </div>
+{{ end }}

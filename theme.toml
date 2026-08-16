@@ -1,0 +1,16 @@
+name = "lesson-sci-hugo"
+license = "MIT"
+licenselink = "https://github.com/FujimotoGroup/lesson-sci-hugo/blob/main/LICENSE"
+description = "A Hugo theme for progressive, code-centered science lessons."
+homepage = "https://github.com/FujimotoGroup/lesson-sci-hugo"
+tags = ["documentation", "education", "science", "lessons", "responsive"]
+features = ["lesson navigation", "math", "code copy", "table of contents"]
+min_version = "0.92.2"
+
+[author]
+  name = "Junji Fujimoto"
+  homepage = "https://jfujimo.to"
+
+[original]
+  name = "Group"
+  homepage = "https://spin.eeap.saitama-u.ac.jp"

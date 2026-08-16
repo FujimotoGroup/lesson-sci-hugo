@@ -1,0 +1,21 @@
+{{ define "main" }}
+  <section class="section-intro">
+    <p class="eyebrow">Learning path</p>
+    <h1>{{ .Title }}</h1>
+    <div class="lead prose">{{ .Content }}</div>
+  </section>
+  <ol class="course-list">
+    {{ range .Pages.ByWeight }}
+      <li>
+        <a href="{{ .RelPermalink }}">
+          <span class="course-list__index">{{ printf "%02d" (int .Params.lesson) }}</span>
+          <span class="course-list__body">
+            <strong>{{ .Title }}</strong>
+            <span>{{ .Params.summary | default .Summary }}</span>
+          </span>
+          <span class="course-list__duration">{{ .Params.duration | default "20 min" }}</span>
+        </a>
+      </li>
+    {{ end }}
+  </ol>
+{{ end }}

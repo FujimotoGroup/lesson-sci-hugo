@@ -1,0 +1,31 @@
+{{ define "main" }}
+  <section class="hero">
+    <p class="eyebrow">Science, one runnable step at a time</p>
+    <h1>{{ .Title }}</h1>
+    <div class="hero__copy prose">{{ .Content }}</div>
+    {{ with .Site.GetPage "section" "lessons" }}
+      <a class="button" href="{{ .RelPermalink }}">Lessonを始める <span aria-hidden="true">→</span></a>
+    {{ end }}
+  </section>
+  {{ with .Site.GetPage "section" "lessons" }}
+    <section class="home-lessons" aria-labelledby="home-lessons-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Course map</p>
+          <h2 id="home-lessons-title">小さく動かして、仕組みを読む</h2>
+        </div>
+        <a href="{{ .RelPermalink }}">すべてのLesson</a>
+      </div>
+      <div class="lesson-grid">
+        {{ range first 3 .Pages.ByWeight }}
+          <a class="lesson-card" href="{{ .RelPermalink }}">
+            <span class="lesson-card__number">Lesson {{ .Params.lesson }}</span>
+            <h3>{{ .Title }}</h3>
+            <p>{{ .Params.summary | default .Summary }}</p>
+            <span class="lesson-card__meta">{{ .Params.duration | default "20 min" }} · 開く →</span>
+          </a>
+        {{ end }}
+      </div>
+    </section>
+  {{ end }}
+{{ end }}

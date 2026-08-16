@@ -1,0 +1,16 @@
+<aside class="lesson-sidebar" aria-label="Lesson一覧">
+  <a class="lesson-sidebar__title" href="{{ with .Site.GetPage "section" "lessons" }}{{ .RelPermalink }}{{ end }}">Learning path</a>
+  <ol>
+    {{- $current := .RelPermalink -}}
+    {{- with .Site.GetPage "section" "lessons" -}}
+      {{- range .Pages.ByWeight -}}
+        <li>
+          <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $current }} aria-current="page"{{ end }}>
+            <span>{{ printf "%02d" (int .Params.lesson) }}</span>
+            {{ .LinkTitle }}
+          </a>
+        </li>
+      {{- end -}}
+    {{- end -}}
+  </ol>
+</aside>

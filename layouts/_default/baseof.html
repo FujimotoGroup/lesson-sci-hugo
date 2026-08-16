@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="{{ .Site.Language.Lang | default "ja" }}">
+  {{- partial "head.html" . -}}
+  <body>
+    <a class="skip-link" href="#main-content">本文へ移動</a>
+    {{- partial "header.html" . -}}
+    {{- $isLesson := and (eq .Section "lessons") (not .IsSection) -}}
+    <div class="page-frame{{ if $isLesson }} page-frame--lesson{{ end }}">
+      {{- if $isLesson -}}
+        {{- partial "lesson-sidebar.html" . -}}
+      {{- end -}}
+      <main id="main-content" class="main-content" tabindex="-1">
+        {{- block "main" . }}{{ end -}}
+      </main>
+      {{- if and $isLesson .Params.toc -}}
+        <aside class="page-toc" aria-label="このLessonの目次">
+          <p class="page-toc__title">このLesson</p>
+          {{ .TableOfContents }}
+        </aside>
+      {{- end -}}
+    </div>
+    {{- partial "footer.html" . -}}
+    {{- $script := resources.Get "js/code-copy.js" | minify | fingerprint -}}
+    <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+{{- $objectives := .Params.objectives -}}
+{{- $prerequisites := .Params.prerequisites -}}
+{{- if or $objectives $prerequisites -}}
+  <div class="lesson-meta">
+    {{- with $objectives -}}
+      <div>
+        <strong>このLessonの到達点</strong>
+        <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+      </div>
+    {{- end -}}
+    {{- with $prerequisites -}}
+      <div>
+        <strong>前提</strong>
+        <ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+      </div>
+    {{- end -}}
+  </div>
+{{- end -}}

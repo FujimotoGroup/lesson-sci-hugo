@@ -1,0 +1,31 @@
+baseURL = "http://example.org/"
+languageCode = "ja-jp"
+defaultContentLanguage = "ja"
+title = "SymHam Lessons"
+theme = "lesson-sci-hugo"
+disableKinds = ["taxonomy", "term", "RSS"]
+
+[params]
+  tagline = "対称性からタイトバインディング模型を組み立てる"
+  description = "予想し、動かし、出力を読むためのSymHamレッスン"
+  repository = "https://github.com/FujimotoGroup/SymHam"
+  themeColor = "#143d8f"
+  loadGoogleFonts = true
+  math = true
+
+[menu]
+  [[menu.main]]
+    name = "Lessons"
+    url = "/lessons/"
+    weight = 1
+
+[markup]
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = false
+    lineNos = false
+    noClasses = true
+    style = "github-dark"
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = false

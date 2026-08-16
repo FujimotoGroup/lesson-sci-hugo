@@ -1,0 +1,38 @@
+{{ define "main" }}
+  <article class="lesson">
+    <nav class="breadcrumb" aria-label="パンくずリスト">
+      <a href="{{ .Site.Home.RelPermalink }}">Home</a>
+      <span aria-hidden="true">/</span>
+      {{ with .Site.GetPage "section" "lessons" }}<a href="{{ .RelPermalink }}">Lessons</a>{{ end }}
+    </nav>
+
+    <header class="lesson-header">
+      <div class="lesson-header__topline">
+        <span class="lesson-number">Lesson {{ .Params.lesson }}</span>
+        <span class="lesson-duration">{{ .Params.duration | default "20 min" }}</span>
+      </div>
+      <h1>{{ .Title }}</h1>
+      {{ with .Params.summary }}<p class="lead">{{ . }}</p>{{ end }}
+      {{ partial "lesson-meta.html" . }}
+    </header>
+
+    <div class="prose lesson-body">
+      {{ .Content }}
+    </div>
+
+    <nav class="lesson-pagination" aria-label="Lesson間の移動">
+      {{ with .PrevInSection }}
+        <a class="lesson-pagination__prev" href="{{ .RelPermalink }}">
+          <span>← 前のLesson</span>
+          <strong>{{ .Title }}</strong>
+        </a>
+      {{ end }}
+      {{ with .NextInSection }}
+        <a class="lesson-pagination__next" href="{{ .RelPermalink }}">
+          <span>次のLesson →</span>
+          <strong>{{ .Title }}</strong>
+        </a>
+      {{ end }}
+    </nav>
+  </article>
+{{ end }}
