@@ -14,7 +14,7 @@ hugo server --source exampleSite --themesDir ../..
 Then open the URL printed by Hugo and navigate to:
 
 ```text
-/lessons/01-first-hamiltonian/
+/lessons/01-measurement-basics/
 ```
 
 The minimum supported Hugo version is 0.92.2.
@@ -37,16 +37,16 @@ Lesson pages live below `content/lessons/` and use ordinary front matter:
 
 ```yaml
 ---
-title: "First Hamiltonian"
+title: "Measurement basics"
 lesson: 1
 weight: 1
 duration: "20 min"
 toc: true
-summary: "Build and inspect the smallest model."
+summary: "Summarize repeated measurements."
 prerequisites:
   - "Python basics"
 objectives:
-  - "Construct a model"
+  - "Calculate a mean"
   - "Interpret its output"
 ---
 ```

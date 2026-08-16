@@ -1,14 +1,14 @@
 baseURL = "http://example.org/"
 languageCode = "ja-jp"
 defaultContentLanguage = "ja"
-title = "SymHam Lessons"
+title = "Science Lesson Kit"
 theme = "lesson-sci-hugo"
 disableKinds = ["taxonomy", "term", "RSS"]
 
 [params]
-  tagline = "対称性からタイトバインディング模型を組み立てる"
-  description = "予想し、動かし、出力を読むためのSymHamレッスン"
-  repository = "https://github.com/FujimotoGroup/SymHam"
+  tagline = "予想し、動かし、科学的に読み解く"
+  description = "実行可能なコードを使った科学Lessonのサンプル"
+  repository = "https://github.com/FujimotoGroup/lesson-sci-hugo"
   themeColor = "#143d8f"
   loadGoogleFonts = true
   math = true
