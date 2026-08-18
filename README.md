@@ -28,6 +28,7 @@ configuration:
 theme = "lesson-sci-hugo"
 
 [params]
+homeEyebrow = "Science, one runnable step at a time"
 tagline = "Runnable lessons for scientific software"
 description = "Learn by predicting, running, and interpreting."
 math = true

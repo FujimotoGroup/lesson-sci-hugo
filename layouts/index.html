@@ -1,6 +1,6 @@
 {{ define "main" }}
   <section class="hero">
-    <p class="eyebrow">Science, one runnable step at a time</p>
+    {{ with .Site.Params.homeEyebrow }}<p class="eyebrow">{{ . }}</p>{{ end }}
     <h1>{{ .Title }}</h1>
     <div class="hero__copy prose">{{ .Content }}</div>
     {{ with .Site.GetPage "section" "lessons" }}
