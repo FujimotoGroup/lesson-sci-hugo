@@ -525,12 +525,18 @@ a {
 }
 
 .lesson-number {
-  padding: 0.28rem 0.55rem;
+  display: inline-flex;
+  height: 24px;
+  padding: 0 8px;
+  align-items: center;
+  justify-content: center;
   color: white;
   background: var(--blue);
-  border-radius: 999px;
+  border-radius: 5px;
   letter-spacing: 0.06em;
+  line-height: 1;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .lesson-duration {
