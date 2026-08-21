@@ -3,7 +3,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ .Params.summary | default .Site.Params.description }}">
-  {{- with .Site.Params.themeColor }}<meta name="theme-color" content="{{ . }}">{{ end }}
+  {{- $lightThemeColor := .Site.Params.themeColor | default "#143d8f" -}}
+  {{- $darkThemeColor := .Site.Params.themeDarkColor | default "#0b1219" -}}
+  <meta name="theme-color" content="{{ $lightThemeColor }}" data-light="{{ $lightThemeColor }}" data-dark="{{ $darkThemeColor }}">
+  <script>
+    (function () {
+      var theme;
+      try {
+        var savedTheme = localStorage.getItem("lesson-sci-color-theme");
+        if (savedTheme === "light" || savedTheme === "dark") theme = savedTheme;
+      } catch (error) {}
+      if (!theme) {
+        theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      }
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.style.colorScheme = theme;
+      var themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) themeColor.content = themeColor.getAttribute("data-" + theme);
+    }());
+  </script>
   {{- if .Site.Params.loadGoogleFonts }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

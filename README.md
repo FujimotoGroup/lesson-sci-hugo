@@ -34,6 +34,11 @@ description = "Learn by predicting, running, and interpreting."
 math = true
 ```
 
+The header includes a light/dark mode switch. The initial mode follows the
+visitor's system preference and their selection is saved in the browser. Set
+`themeColor` and `themeDarkColor` to customize the browser chrome colors for
+each mode.
+
 Lesson pages live below `content/lessons/` and use ordinary front matter:
 
 ```yaml

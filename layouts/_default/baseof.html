@@ -20,6 +20,8 @@
       {{- end -}}
     </div>
     {{- partial "footer.html" . -}}
+    {{- $themeScript := resources.Get "js/theme-toggle.js" | minify | fingerprint -}}
+    <script src="{{ $themeScript.RelPermalink }}" integrity="{{ $themeScript.Data.Integrity }}"></script>
     {{- $script := resources.Get "js/code-copy.js" | minify | fingerprint -}}
     <script src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}"></script>
   </body>
