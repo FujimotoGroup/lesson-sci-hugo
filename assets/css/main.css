@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --ink: #18252f;
   --ink-soft: #4b5c68;
   --paper: #fbfcfd;
@@ -13,10 +14,58 @@
   --gold: #e6ad32;
   --green: #2d8a6e;
   --code: #101b2b;
+  --accent-ink: #0d2459;
+  --accent-solid: #143d8f;
+  --accent-hover: #0d2459;
+  --on-accent: #ffffff;
+  --header-bg: rgba(251, 252, 253, 0.92);
+  --header-line: rgba(20, 61, 143, 0.12);
+  --meta-line: #d8eaf1;
+  --inline-code-ink: #9d361f;
+  --inline-code-bg: #fff0eb;
+  --goal-bg: #eef8fc;
+  --predict-bg: #fff8e8;
+  --exercise-bg: #eef8f4;
+  --solution-line: #bddfd4;
   --radius: 14px;
   --shadow: 0 16px 45px rgba(21, 56, 78, 0.09);
+  --card-shadow: 0 8px 24px rgba(21, 56, 78, 0.05);
+  --block-shadow: 0 8px 20px rgba(21, 56, 78, 0.045);
   --serif: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
   --sans: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #e5edf3;
+  --ink-soft: #a8b7c2;
+  --paper: #0b1219;
+  --surface: #111b24;
+  --surface-soft: #17232d;
+  --line: #2a3a47;
+  --blue: #91b7ff;
+  --sky: #78c4df;
+  --sky-soft: #172f3d;
+  --coral: #ff9b83;
+  --gold: #f0bd4d;
+  --green: #65c6a5;
+  --code: #08111d;
+  --accent-ink: #bfd1ff;
+  --accent-solid: #3d6fbf;
+  --accent-hover: #2f5da6;
+  --on-accent: #ffffff;
+  --header-bg: rgba(11, 18, 25, 0.9);
+  --header-line: rgba(145, 183, 255, 0.18);
+  --meta-line: #284351;
+  --inline-code-ink: #ffb09b;
+  --inline-code-bg: #38221f;
+  --goal-bg: #102a37;
+  --predict-bg: #2a2415;
+  --exercise-bg: #132b25;
+  --solution-line: #345e52;
+  --shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  --block-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
 * {
@@ -85,8 +134,8 @@ a {
   position: sticky;
   z-index: 20;
   top: 0;
-  border-bottom: 1px solid rgba(20, 61, 143, 0.12);
-  background: rgba(251, 252, 253, 0.92);
+  border-bottom: 1px solid var(--header-line);
+  background: var(--header-bg);
   backdrop-filter: blur(14px);
 }
 
@@ -117,8 +166,8 @@ a {
   width: 42px;
   height: 42px;
   place-items: center;
-  color: white;
-  background: linear-gradient(135deg, var(--blue), var(--sky));
+  color: var(--on-accent);
+  background: linear-gradient(135deg, var(--accent-solid), var(--sky));
   border-radius: 12px 12px 12px 4px;
   box-shadow: 0 7px 18px rgba(20, 61, 143, 0.22);
   font-family: Georgia, serif;
@@ -164,6 +213,41 @@ a {
   padding: 0.45rem 0.8rem;
   border: 1px solid var(--line);
   border-radius: 999px;
+}
+
+.theme-toggle {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--blue);
+  border-color: var(--sky);
+}
+
+.theme-toggle__icon {
+  display: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+:root[data-theme="light"] .theme-toggle__icon--moon,
+:root[data-theme="dark"] .theme-toggle__icon--sun {
+  display: block;
 }
 
 .page-frame {
@@ -250,8 +334,8 @@ a {
   padding: 0.85rem 1.2rem;
   align-items: center;
   gap: 1rem;
-  color: white;
-  background: var(--blue);
+  color: var(--on-accent);
+  background: var(--accent-solid);
   border-radius: 10px;
   box-shadow: 0 10px 24px rgba(20, 61, 143, 0.2);
   font-weight: 700;
@@ -259,8 +343,8 @@ a {
 }
 
 .button:hover {
-  color: white;
-  background: var(--blue-deep);
+  color: var(--on-accent);
+  background: var(--accent-hover);
   transform: translateY(-1px);
 }
 
@@ -298,7 +382,7 @@ a {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(21, 56, 78, 0.05);
+  box-shadow: var(--card-shadow);
   text-decoration: none;
   transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
@@ -455,7 +539,7 @@ a {
 
 .lesson-sidebar li a:hover,
 .lesson-sidebar li a[aria-current="page"] {
-  color: var(--blue-deep);
+  color: var(--accent-ink);
   background: var(--sky-soft);
 }
 
@@ -526,8 +610,8 @@ a {
 
 .lesson-number {
   padding: 0.28rem 0.55rem;
-  color: white;
-  background: var(--blue);
+  color: var(--on-accent);
+  background: var(--accent-solid);
   border-radius: 999px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -548,13 +632,13 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1.3rem;
   background: var(--surface-soft);
-  border: 1px solid #d8eaf1;
+  border: 1px solid var(--meta-line);
   border-radius: 12px;
   font-size: 0.82rem;
 }
 
 .lesson-meta strong {
-  color: var(--blue-deep);
+  color: var(--accent-ink);
 }
 
 .lesson-meta ul {
@@ -617,8 +701,8 @@ a {
 
 .prose code:not(pre code) {
   padding: 0.12em 0.32em;
-  color: #9d361f;
-  background: #fff0eb;
+  color: var(--inline-code-ink);
+  background: var(--inline-code-bg);
   border-radius: 4px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.86em;
@@ -701,28 +785,28 @@ a {
   border: 1px solid var(--line);
   border-left: 5px solid var(--blue);
   border-radius: 4px var(--radius) var(--radius) 4px;
-  box-shadow: 0 8px 20px rgba(21, 56, 78, 0.045);
+  box-shadow: var(--block-shadow);
 }
 
 .lesson-block--goal {
-  background: #eef8fc;
+  background: var(--goal-bg);
   border-left-color: var(--blue);
 }
 
 .lesson-block--predict {
-  background: #fff8e8;
+  background: var(--predict-bg);
   border-left-color: var(--gold);
 }
 
 .lesson-block--exercise {
-  background: #eef8f4;
+  background: var(--exercise-bg);
   border-left-color: var(--green);
 }
 
 .lesson-block__label,
 .expected-output__label {
   margin: 0 0 0.45rem;
-  color: var(--blue-deep);
+  color: var(--accent-ink);
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -756,7 +840,7 @@ a {
 }
 
 .lesson-details--solution {
-  border-color: #bddfd4;
+  border-color: var(--solution-line);
 }
 
 .expected-output {
@@ -905,6 +989,10 @@ a {
     min-height: 64px;
   }
 
+  .site-nav {
+    gap: 0.65rem;
+  }
+
   .brand__mark {
     width: 36px;
     height: 36px;
@@ -914,6 +1002,11 @@ a {
   .site-nav__repo {
     padding: 0.35rem 0.55rem;
     font-size: 0.7rem;
+  }
+
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
   }
 
   .page-frame,
@@ -973,6 +1066,7 @@ a {
   .page-toc,
   .site-footer,
   .code-copy,
+  .theme-toggle,
   .lesson-pagination {
     display: none !important;
   }
