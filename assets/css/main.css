@@ -539,6 +539,11 @@ a {
   white-space: nowrap;
 }
 
+.lesson-number > span {
+  display: inline-block;
+  transform: translateY(1px);
+}
+
 .lesson-duration {
   color: var(--ink-soft);
 }
