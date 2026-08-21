@@ -526,15 +526,15 @@ a {
 
 .lesson-number {
   display: inline-flex;
-  height: 24px;
-  padding: 0 8px;
+  min-height: 24px;
+  padding: 4px 8px;
   align-items: center;
   justify-content: center;
   color: white;
   background: var(--blue);
   border-radius: 5px;
   letter-spacing: 0.06em;
-  line-height: 1;
+  line-height: 16px;
   text-transform: uppercase;
   white-space: nowrap;
 }
