@@ -512,40 +512,49 @@ a {
 .lesson-sidebar ol {
   margin: 0;
   padding: 0;
+  border-top: 1px solid var(--line);
   list-style: none;
 }
 
 .lesson-sidebar li {
-  margin: 0.25rem 0;
+  margin: 0;
+  border-bottom: 1px solid var(--line);
 }
 
 .lesson-sidebar li a {
   display: grid;
-  padding: 0.55rem 0.65rem;
-  grid-template-columns: 30px 1fr;
+  padding: 0.7rem 0.45rem 0.7rem 0.65rem;
+  grid-template-columns: 2rem 1fr;
   align-items: baseline;
   color: var(--ink-soft);
-  border-radius: 8px;
   font-size: 0.78rem;
   line-height: 1.45;
   text-decoration: none;
+  transition: color 140ms ease, background-color 140ms ease;
 }
 
 .lesson-sidebar li a span {
-  color: var(--sky);
+  color: var(--ink-soft);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  transition: color 140ms ease;
 }
 
 .lesson-sidebar li a:hover,
 .lesson-sidebar li a[aria-current="page"] {
   color: var(--accent-ink);
-  background: var(--sky-soft);
+  background: linear-gradient(90deg, var(--sky-soft), transparent 92%);
 }
 
 .lesson-sidebar li a[aria-current="page"] {
-  box-shadow: inset 3px 0 0 var(--blue);
+  box-shadow: inset 2px 0 0 var(--blue);
   font-weight: 700;
+}
+
+.lesson-sidebar li a:hover span,
+.lesson-sidebar li a[aria-current="page"] span {
+  color: var(--blue);
 }
 
 .page-toc {
@@ -974,11 +983,15 @@ a {
   .lesson-sidebar ol {
     display: flex;
     overflow-x: auto;
-    gap: 0.4rem;
+    border-right: 0;
+    border-left: 0;
+    gap: 0;
   }
 
   .lesson-sidebar li {
     flex: 0 0 auto;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
 
   .lesson-sidebar li a {
