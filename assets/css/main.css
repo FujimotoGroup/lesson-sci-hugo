@@ -527,8 +527,8 @@ a {
   grid-template-columns: 2rem 1fr;
   align-items: baseline;
   color: var(--ink-soft);
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.84rem;
+  line-height: 1.55;
   text-decoration: none;
   transition: color 140ms ease, background-color 140ms ease;
 }
@@ -536,7 +536,7 @@ a {
 .lesson-sidebar li a span {
   color: var(--ink-soft);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.05em;
   transition: color 140ms ease;
 }
