@@ -2,10 +2,10 @@
   color-scheme: light;
   --ink: #18252f;
   --ink-soft: #4b5c68;
-  --paper: #fbfcfd;
+  --paper: #f6f8fa;
   --surface: #ffffff;
-  --surface-soft: #f1f7fa;
-  --line: #d9e3e8;
+  --surface-soft: #eef4f8;
+  --line: #ccd9e1;
   --blue: #143d8f;
   --blue-deep: #0d2459;
   --sky: #7ec8e3;
@@ -27,10 +27,13 @@
   --predict-bg: #fff8e8;
   --exercise-bg: #eef8f4;
   --solution-line: #bddfd4;
+  --goal-ink: #143d8f;
+  --predict-ink: #8a5d0b;
+  --exercise-ink: #1d6b52;
   --radius: 14px;
-  --shadow: 0 16px 45px rgba(21, 56, 78, 0.09);
-  --card-shadow: 0 8px 24px rgba(21, 56, 78, 0.05);
-  --block-shadow: 0 8px 20px rgba(21, 56, 78, 0.045);
+  --shadow: 0 10px 28px rgba(21, 56, 78, 0.1);
+  --card-shadow: 0 1px 3px rgba(21, 56, 78, 0.07);
+  --block-shadow: 0 1px 2px rgba(21, 56, 78, 0.05);
   --serif: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
   --sans: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", system-ui, sans-serif;
 }
@@ -63,9 +66,12 @@
   --predict-bg: #2a2415;
   --exercise-bg: #132b25;
   --solution-line: #345e52;
-  --shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
-  --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  --block-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  --goal-ink: #91b7ff;
+  --predict-ink: #f0bd4d;
+  --exercise-ink: #65c6a5;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.32);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --block-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -82,7 +88,7 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    radial-gradient(circle at 12% 4%, rgba(126, 200, 227, 0.15), transparent 24rem),
+    radial-gradient(circle at 12% 4%, rgba(126, 200, 227, 0.09), transparent 20rem),
     var(--paper);
   font-family: var(--sans);
   font-size: 17px;
@@ -169,8 +175,8 @@ a {
   color: var(--on-accent);
   background: linear-gradient(135deg, var(--accent-solid), var(--sky));
   border-radius: 12px 12px 12px 4px;
-  box-shadow: 0 7px 18px rgba(20, 61, 143, 0.22);
-  font-family: Georgia, serif;
+  box-shadow: 0 2px 8px rgba(20, 61, 143, 0.22);
+  font-family: var(--serif);
   font-size: 1.45rem;
 }
 
@@ -273,31 +279,33 @@ a {
 .eyebrow {
   margin: 0 0 0.65rem;
   color: var(--blue);
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
 .hero {
-  position: relative;
   max-width: 940px;
-  padding: clamp(2rem, 6vw, 5rem) 0 5rem;
+  padding: clamp(2rem, 5vw, 4rem) 0 4.5rem;
 }
 
-.hero::after {
-  position: absolute;
-  top: 1rem;
-  right: -6rem;
-  width: 270px;
-  height: 270px;
-  border: 1px solid rgba(20, 61, 143, 0.14);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 0 42px rgba(126, 200, 227, 0.08),
-    inset 0 0 0 84px rgba(20, 61, 143, 0.04);
-  content: "";
-  pointer-events: none;
+.hero--with-figure {
+  display: grid;
+  max-width: none;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.hero__figure {
+  margin: 0;
+}
+
+.hero__figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .hero h1,
@@ -307,29 +315,23 @@ a {
   margin: 0;
   font-family: var(--serif);
   font-weight: 700;
-  line-height: 1.22;
-  letter-spacing: -0.035em;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .hero h1 {
-  position: relative;
-  z-index: 1;
   max-width: 820px;
-  font-size: clamp(2.8rem, 7vw, 5.4rem);
+  font-size: clamp(2.1rem, 4.5vw, 3.3rem);
 }
 
 .hero__copy {
-  position: relative;
-  z-index: 1;
   max-width: 690px;
   margin: 1.5rem 0 2rem;
   color: var(--ink-soft);
-  font-size: clamp(1.08rem, 2vw, 1.28rem);
+  font-size: clamp(1.02rem, 1.7vw, 1.15rem);
 }
 
 .button {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
   padding: 0.85rem 1.2rem;
   align-items: center;
@@ -364,7 +366,7 @@ a {
 .section-heading h2 {
   margin: 0;
   font-family: var(--serif);
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
 }
 
 .lesson-grid {
@@ -375,7 +377,6 @@ a {
 
 .lesson-card {
   display: flex;
-  min-height: 240px;
   padding: 1.45rem;
   flex-direction: column;
   color: var(--ink);
@@ -384,14 +385,13 @@ a {
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   text-decoration: none;
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
 
 .lesson-card:hover {
   color: var(--ink);
-  border-color: var(--sky);
-  box-shadow: var(--shadow);
-  transform: translateY(-3px);
+  background: var(--surface-soft);
+  border-color: var(--accent-solid);
 }
 
 .lesson-card__number {
@@ -429,9 +429,13 @@ a {
   margin-bottom: 3rem;
 }
 
+.section-intro {
+  margin-inline: auto;
+}
+
 .section-intro h1,
 .article-header h1 {
-  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-size: clamp(1.9rem, 3.6vw, 2.7rem);
 }
 
 .lead {
@@ -440,8 +444,8 @@ a {
 }
 
 .course-list {
-  max-width: 900px;
-  margin: 0;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 0;
   border-top: 1px solid var(--line);
   list-style: none;
@@ -454,22 +458,30 @@ a {
 
 .course-list a {
   display: grid;
-  padding: 1.35rem 0.4rem;
-  grid-template-columns: 60px 1fr auto;
+  padding: 1.35rem 0.6rem;
+  grid-template-columns: 64px 1fr auto;
   align-items: center;
   gap: 1.2rem;
   color: var(--ink);
   text-decoration: none;
+  transition: background-color 140ms ease;
 }
 
 .course-list a:hover {
   color: var(--blue);
+  background: var(--surface-soft);
 }
 
 .course-list__index {
-  color: var(--sky);
-  font-family: Georgia, serif;
-  font-size: 1.65rem;
+  color: var(--accent-ink);
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 700;
+  opacity: 0.45;
+}
+
+.course-list a:hover .course-list__index {
+  opacity: 1;
 }
 
 .course-list__body strong,
@@ -482,10 +494,19 @@ a {
   font-size: 1.15rem;
 }
 
-.course-list__body span,
-.course-list__duration {
+.course-list__body span {
   color: var(--ink-soft);
   font-size: 0.82rem;
+}
+
+.course-list__duration {
+  padding: 0.28rem 0.7rem;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .lesson-sidebar,
@@ -642,7 +663,7 @@ a {
 }
 
 .lesson-header h1 {
-  font-size: clamp(2.35rem, 5vw, 4.2rem);
+  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
 }
 
 .lesson-meta {
@@ -833,6 +854,35 @@ a {
   text-transform: uppercase;
 }
 
+.lesson-block__label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.lesson-block__label svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lesson-block--goal .lesson-block__label {
+  color: var(--goal-ink);
+}
+
+.lesson-block--predict .lesson-block__label {
+  color: var(--predict-ink);
+}
+
+.lesson-block--exercise .lesson-block__label {
+  color: var(--exercise-ink);
+}
+
 .lesson-block > div > :first-child,
 .lesson-block > div > :last-child {
   margin-top: 0;
@@ -998,9 +1048,13 @@ a {
     max-width: 220px;
   }
 
-  .hero::after {
-    opacity: 0.55;
-    right: -9rem;
+  .hero--with-figure {
+    display: block;
+  }
+
+  .hero__figure {
+    max-width: 300px;
+    margin-top: 2.5rem;
   }
 }
 
@@ -1044,7 +1098,7 @@ a {
   }
 
   .hero h1 {
-    font-size: 2.55rem;
+    font-size: 1.9rem;
   }
 
   .section-heading,
@@ -1062,7 +1116,7 @@ a {
   }
 
   .lesson-header h1 {
-    font-size: 2.35rem;
+    font-size: 1.7rem;
   }
 
   .lesson-meta,

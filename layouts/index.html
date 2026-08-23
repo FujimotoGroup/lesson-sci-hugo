@@ -1,10 +1,16 @@
 {{ define "main" }}
-  <section class="hero">
-    {{ with .Site.Params.homeEyebrow }}<p class="eyebrow">{{ . }}</p>{{ end }}
-    <h1>{{ .Title }}</h1>
-    <div class="hero__copy prose">{{ .Content }}</div>
-    {{ with .Site.GetPage "section" "lessons" }}
-      <a class="button" href="{{ .RelPermalink }}">Lessonを始める <span aria-hidden="true">→</span></a>
+  {{- $figure := trim (partial "hero-figure.html" .) " \r\n\t" -}}
+  <section class="hero{{ if $figure }} hero--with-figure{{ end }}">
+    <div class="hero__body">
+      {{ with .Site.Params.homeEyebrow }}<p class="eyebrow">{{ . }}</p>{{ end }}
+      <h1>{{ .Title }}</h1>
+      <div class="hero__copy prose">{{ .Content }}</div>
+      {{ with .Site.GetPage "section" "lessons" }}
+        <a class="button" href="{{ .RelPermalink }}">Lessonを始める <span aria-hidden="true">→</span></a>
+      {{ end }}
+    </div>
+    {{ if $figure }}
+      <div class="hero__figure" aria-hidden="true">{{ $figure | safeHTML }}</div>
     {{ end }}
   </section>
   {{ with .Site.GetPage "section" "lessons" }}
