@@ -4,10 +4,11 @@
     <h1>{{ .Title }}</h1>
     <div class="lead prose">{{ .Content }}</div>
   </section>
+  {{- $pages := partial "lessons/pages.html" . -}}
   <div class="lesson-grid">
-    {{ range .Pages.ByWeight }}
+    {{ range $index, $page := $pages }}
       <a class="lesson-card" href="{{ .RelPermalink }}">
-        <span class="lesson-card__number">{{ i18n "lesson" (dict "Number" .Params.lesson) }}</span>
+        <span class="lesson-card__number">{{ i18n "lesson" (dict "Number" (add $index 1)) }}</span>
         <h2>{{ .Title }}</h2>
         <p>{{ .Params.summary | default .Summary }}</p>
         <span class="lesson-card__meta">{{ .Params.duration | default (i18n "defaultDuration") }} · {{ i18n "openLesson" }} →</span>

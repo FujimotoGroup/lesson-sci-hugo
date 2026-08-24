@@ -1,4 +1,5 @@
 {{- $pages := .Pages -}}
+{{- $positions := .Positions -}}
 {{- range .Section.Pages.ByWeight -}}
   {{- if .IsSection -}}
     <li class="course-list__chapter">
@@ -7,11 +8,11 @@
         {{- with .Params.summary }}<p>{{ . }}</p>{{ end -}}
       </div>
       <ol class="course-list__nested">
-        {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $pages) -}}
+        {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $pages "Positions" $positions) -}}
       </ol>
     </li>
   {{- else -}}
-    {{- $position := partial "lessons/position.html" (dict "Page" . "Pages" $pages) -}}
+    {{- $position := index $positions .RelPermalink -}}
     <li class="course-list__lesson">
       <a href="{{ .RelPermalink }}">
         <span class="course-list__index">{{ printf "%02d" (add $position 1) }}</span>

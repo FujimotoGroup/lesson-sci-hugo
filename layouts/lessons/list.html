@@ -5,8 +5,8 @@
     <div class="lead prose">{{ .Content }}</div>
   </section>
   {{- $root := .Site.GetPage "section" "lessons" -}}
-  {{- $pages := partial "lessons/pages.html" $root -}}
+  {{- $course := partial "lessons/context.html" $root -}}
   <ol class="course-list">
-    {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $pages) -}}
+    {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $course.Pages "Positions" $course.Positions) -}}
   </ol>
 {{ end }}

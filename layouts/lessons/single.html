@@ -1,7 +1,11 @@
 {{ define "main" }}
   {{- $root := .Site.GetPage "section" "lessons" -}}
-  {{- $pages := partial "lessons/pages.html" $root -}}
-  {{- $position := partial "lessons/position.html" (dict "Page" . "Pages" $pages) -}}
+  {{- $course := partial "lessons/context.html" $root -}}
+  {{- if not (isset $course.Positions .RelPermalink) -}}
+    {{- errorf "lesson page %q is rendered but excluded from the canonical lesson sequence; remove _build.list = 'never' or disable rendering" .RelPermalink -}}
+  {{- end -}}
+  {{- $pages := $course.Pages -}}
+  {{- $position := index $course.Positions .RelPermalink -}}
   <article class="lesson">
     <nav class="breadcrumb" aria-label="{{ i18n "breadcrumb" }}">
       <a href="{{ .Site.Home.RelPermalink }}">{{ i18n "home" }}</a>

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -43,14 +44,19 @@ def language_switcher(page: str) -> str:
     return match.group(0)
 
 
-def build(output_root: Path, *, disable_english: bool = False) -> None:
+def build(
+    output_root: Path,
+    *,
+    disable_english: bool = False,
+    source_root: Path | None = None,
+) -> None:
     environment = os.environ.copy()
     if disable_english:
         environment["HUGO_DISABLELANGUAGES"] = "en"
     command = [
         HUGO,
         "--source",
-        str(REPOSITORY_ROOT / "exampleSite"),
+        str(source_root or REPOSITORY_ROOT / "exampleSite"),
         "--themesDir",
         str(REPOSITORY_ROOT.parent),
         "--theme",
@@ -63,9 +69,56 @@ def build(output_root: Path, *, disable_english: bool = False) -> None:
     subprocess.run(command, check=True, env=environment)
 
 
+def require_excluded_lesson_failure(temporary_root: Path) -> None:
+    source_root = temporary_root / "excluded-source"
+    shutil.copytree(REPOSITORY_ROOT / "exampleSite", source_root)
+    excluded_lesson = source_root / "content/lessons/99-excluded.md"
+    excluded_lesson.write_text(
+        """---
+title: "Excluded lesson"
+weight: 99
+_build:
+  list: never
+  render: always
+---
+
+This rendered page must not silently receive Lesson 0.
+""",
+        encoding="utf-8",
+    )
+    environment = os.environ.copy()
+    environment["HUGO_DISABLELANGUAGES"] = "en"
+    command = [
+        HUGO,
+        "--source",
+        str(source_root),
+        "--themesDir",
+        str(REPOSITORY_ROOT.parent),
+        "--theme",
+        REPOSITORY_ROOT.name,
+        "--destination",
+        str(temporary_root / "excluded-output"),
+        "--cleanDestinationDir",
+        "--panicOnWarning",
+    ]
+    result = subprocess.run(
+        command,
+        check=False,
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 0:
+        raise AssertionError("rendered but unlisted lesson did not fail the build")
+    diagnostic = result.stdout + result.stderr
+    if "excluded from the canonical lesson sequence" not in diagnostic:
+        raise AssertionError("unlisted lesson failure lacks its targeted diagnostic")
+
+
 def main() -> None:
     with tempfile.TemporaryDirectory(prefix="lesson-sci-hugo-test-") as directory:
-        output_root = Path(directory)
+        temporary_root = Path(directory)
+        output_root = temporary_root / "rendered"
         build(output_root)
 
         japanese_home = read_page(output_root, "index.html")
@@ -86,6 +139,19 @@ def main() -> None:
         english_compare_lesson = read_page(
             output_root,
             "en/lessons/02-analysis/03-compare-results/index.html",
+        )
+        english_sign_lesson = read_page(
+            output_root,
+            "en/lessons/02-analysis/01-differences/99-interpret-sign/index.html",
+        )
+        english_magnitude_lesson = read_page(
+            output_root,
+            "en/lessons/02-analysis/01-differences/01-compare-magnitude/index.html",
+        )
+        japanese_lesson_list = read_page(output_root, "lessons/index.html")
+        japanese_sign_lesson = read_page(
+            output_root,
+            "lessons/02-analysis/01-differences/99-interpret-sign/index.html",
         )
 
         require(
@@ -114,6 +180,23 @@ def main() -> None:
             'data-switch-to-dark="Switch to dark mode"',
             'data-switch-to-light="Switch to light mode"',
         )
+        english_home_cards = re.findall(
+            r'<a class="lesson-card" href="([^"]+)">', english_home
+        )
+        if english_home_cards != [
+            "/en/lessons/01-measurement-basics/",
+            "/en/lessons/01-foundations/02-record-observations/",
+            "/en/lessons/02-analysis/01-differences/99-interpret-sign/",
+        ]:
+            raise AssertionError(f"homepage lesson cards are not canonical pages: {english_home_cards}")
+        require_order(
+            english_home,
+            '<span class="lesson-card__number">Lesson 1</span>',
+            '<span class="lesson-card__number">Lesson 2</span>',
+            '<span class="lesson-card__number">Lesson 3</span>',
+        )
+        if "&lt;no value&gt;" in english_home or "<no value>" in english_home:
+            raise AssertionError("homepage renders a missing manual lesson number")
         require(
             japanese_lesson,
             'href="/en/lessons/01-measurement-basics/"',
@@ -135,6 +218,7 @@ def main() -> None:
             '<li class="course-list__chapter">',
             '<h2>Observation foundations</h2>',
             '<h2>Compare results</h2>',
+            '<h2>Read differences</h2>',
             '<ol class="course-list__nested">',
         )
         require_order(
@@ -142,9 +226,17 @@ def main() -> None:
             '<span class="course-list__index">01</span>',
             '<span class="course-list__index">02</span>',
             '<span class="course-list__index">03</span>',
+            '<span class="course-list__index">04</span>',
+            '<span class="course-list__index">05</span>',
         )
-        if english_lesson_list.count('class="course-list__index"') != 3:
-            raise AssertionError("lesson index does not contain exactly three numbered pages")
+        require_order(
+            english_lesson_list,
+            "Interpret the sign",
+            "Interpret the magnitude",
+            "Compare results",
+        )
+        if english_lesson_list.count('class="course-list__index"') != 5:
+            raise AssertionError("lesson index does not contain exactly five numbered pages")
         require(
             english_record_lesson,
             '<span class="lesson-sidebar__chapter-title">Observation foundations</span>',
@@ -152,17 +244,47 @@ def main() -> None:
             '<span class="lesson-number"><span>Lesson 2</span></span>',
             '<a href="/en/lessons/01-foundations/">Observation foundations</a>',
             'class="lesson-pagination__prev" href="/en/lessons/01-measurement-basics/"',
-            'class="lesson-pagination__next" href="/en/lessons/02-analysis/03-compare-results/"',
+            'class="lesson-pagination__next" href="/en/lessons/02-analysis/01-differences/99-interpret-sign/"',
             'href="/en/lessons/01-foundations/02-record-observations/" aria-current="page"',
         )
         require(
-            english_compare_lesson,
+            english_sign_lesson,
             '<span class="lesson-number"><span>Lesson 3</span></span>',
             '<a href="/en/lessons/02-analysis/">Compare results</a>',
+            '<a href="/en/lessons/02-analysis/01-differences/">Read differences</a>',
             'class="lesson-pagination__prev" href="/en/lessons/01-foundations/02-record-observations/"',
+            'class="lesson-pagination__next" href="/en/lessons/02-analysis/01-differences/01-compare-magnitude/"',
+            'href="/en/lessons/02-analysis/01-differences/99-interpret-sign/" aria-current="page"',
+        )
+        require(
+            english_magnitude_lesson,
+            '<span class="lesson-number"><span>Lesson 4</span></span>',
+            'class="lesson-pagination__prev" href="/en/lessons/02-analysis/01-differences/99-interpret-sign/"',
+            'class="lesson-pagination__next" href="/en/lessons/02-analysis/03-compare-results/"',
+        )
+        require(
+            english_compare_lesson,
+            '<span class="lesson-number"><span>Lesson 5</span></span>',
+            'class="lesson-pagination__prev" href="/en/lessons/02-analysis/01-differences/01-compare-magnitude/"',
         )
         if 'class="lesson-pagination__next"' in english_compare_lesson:
-            raise AssertionError("last nested lesson renders a next link")
+            raise AssertionError("last lesson renders a next link")
+        require_order(
+            japanese_lesson_list,
+            '<span class="course-list__index">01</span>',
+            '<span class="course-list__index">02</span>',
+            '<span class="course-list__index">03</span>',
+            '<span class="course-list__index">04</span>',
+            '<span class="course-list__index">05</span>',
+        )
+        require(
+            japanese_sign_lesson,
+            '<span class="lesson-sidebar__chapter-title">差を読む</span>',
+            '<span class="lesson-number"><span>Lesson 3</span></span>',
+            '<a href="/lessons/02-analysis/">比較する</a>',
+            '<a href="/lessons/02-analysis/01-differences/">差を読む</a>',
+            'class="lesson-pagination__next" href="/lessons/02-analysis/01-differences/01-compare-magnitude/"',
+        )
 
         japanese_switcher = language_switcher(japanese_lesson)
         english_switcher = language_switcher(english_lesson)
@@ -228,6 +350,8 @@ def main() -> None:
         for source in lesson_sources:
             if re.search(r"^lesson\s*:", source.read_text(encoding="utf-8"), re.MULTILINE):
                 raise AssertionError(f"manual lesson number remains in {source}")
+
+        require_excluded_lesson_failure(temporary_root)
 
 
 if __name__ == "__main__":

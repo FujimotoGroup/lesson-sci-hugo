@@ -1,10 +1,10 @@
 <aside class="lesson-sidebar" aria-label="{{ i18n "lessonList" }}">
   {{- $current := .RelPermalink -}}
   {{- with .Site.GetPage "section" "lessons" -}}
-    {{- $pages := partial "lessons/pages.html" . -}}
+    {{- $course := partial "lessons/context.html" . -}}
     <a class="lesson-sidebar__title" href="{{ .RelPermalink }}">{{ i18n "learningPath" }}</a>
     <ol class="lesson-sidebar__tree">
-      {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $pages "Current" $current) -}}
+      {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $course.Pages "Positions" $course.Positions "Current" $current) -}}
     </ol>
   {{- end -}}
 </aside>

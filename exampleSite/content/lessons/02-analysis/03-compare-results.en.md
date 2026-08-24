@@ -1,7 +1,7 @@
 ---
 title: "Compare results"
 linkTitle: "Compare results"
-weight: 1
+weight: 2
 duration: "15 min"
 toc: true
 summary: "Calculate a difference and interpret its sign and magnitude."

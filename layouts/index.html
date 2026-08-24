@@ -14,6 +14,7 @@
     {{ end }}
   </section>
   {{ with .Site.GetPage "section" "lessons" }}
+    {{- $course := partial "lessons/context.html" . -}}
     <section class="home-lessons" aria-labelledby="home-lessons-title">
       <div class="section-heading">
         <div>
@@ -23,9 +24,10 @@
         <a href="{{ .RelPermalink }}">{{ i18n "allLessons" }}</a>
       </div>
       <div class="lesson-grid">
-        {{ range first 3 .Pages.ByWeight }}
+        {{ range first 3 $course.Pages }}
+          {{- $position := index $course.Positions .RelPermalink -}}
           <a class="lesson-card" href="{{ .RelPermalink }}">
-            <span class="lesson-card__number">{{ i18n "lesson" (dict "Number" .Params.lesson) }}</span>
+            <span class="lesson-card__number">{{ i18n "lesson" (dict "Number" (add $position 1)) }}</span>
             <h3>{{ .Title }}</h3>
             <p>{{ .Params.summary | default .Summary }}</p>
             <span class="lesson-card__meta">{{ .Params.duration | default (i18n "defaultDuration") }} · {{ i18n "open" }} →</span>

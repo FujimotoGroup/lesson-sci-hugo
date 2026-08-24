@@ -1,7 +1,7 @@
 ---
 title: "結果を比較する"
 linkTitle: "結果を比較する"
-weight: 1
+weight: 2
 duration: "15分"
 toc: true
 summary: "差を計算し、その符号と大きさを読む。"

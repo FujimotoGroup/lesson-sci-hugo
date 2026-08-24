@@ -90,6 +90,10 @@ content/lessons/
 │   └── 02-record-observations.md
 └── 02-analysis/
     ├── _index.md
+    ├── 01-differences/
+    │   ├── _index.md
+    │   ├── 99-interpret-sign.md
+    │   └── 01-compare-magnitude.md
     └── 03-compare-results.md
 ```
 
@@ -98,6 +102,11 @@ The theme walks this tree depth first, sorting the children of every level by
 The same generated sequence drives the course list, sidebar, lesson heading,
 and previous/next links, including links that cross chapter boundaries. Do not
 add a manual `lesson` parameter.
+
+Every rendered Lesson must also participate in Hugo's page lists. The theme
+stops the build with a targeted error if a page is rendered with
+`_build.render: always` but excluded using `_build.list: never`, because that
+page cannot receive a valid position in the canonical sequence.
 
 ## Lesson shortcodes
 
