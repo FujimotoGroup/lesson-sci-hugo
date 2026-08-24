@@ -73,14 +73,17 @@ def require_failure(
     shortcode: str,
     diagnostic: str,
     *,
-    asset: str | None = None,
+    asset: str | bytes | None = None,
 ) -> None:
     source_root = copied_source(temporary_root, name)
     append_shortcode(source_root, shortcode)
     if asset is not None:
         asset_path = source_root / f"assets/snippets/{name}.py"
         asset_path.parent.mkdir(parents=True, exist_ok=True)
-        asset_path.write_text(asset, encoding="utf-8")
+        if isinstance(asset, bytes):
+            asset_path.write_bytes(asset)
+        else:
+            asset_path.write_text(asset, encoding="utf-8")
     environment = os.environ.copy()
     environment["HUGO_DISABLELANGUAGES"] = "en"
     result = subprocess.run(
@@ -128,7 +131,7 @@ def main() -> None:
         full_source = copied_source(temporary_root, "whole-file")
         append_shortcode(
             full_source,
-            '{{< snippet path="snippets/measurement.py" lang="python" >}}',
+            '{{< snippet path="snippets/measurement.py" >}}',
         )
         full_output = temporary_root / "whole-file" / "output"
         build(full_source, full_output)
@@ -142,6 +145,122 @@ def main() -> None:
             raise AssertionError("whole-file snippet leaked region markers")
         if "data-snippet-region" in full_fragment:
             raise AssertionError("whole-file snippet claims a region")
+        if 'class="language-text"' not in full_fragment:
+            raise AssertionError("snippet without lang did not default to text")
+
+        literal_source = copied_source(temporary_root, "literal-dot")
+        literal_asset = literal_source / "assets/snippets/literal-dot.py"
+        literal_asset.write_bytes(
+            b"// --8<-- [start:targetXname]\r\nwrong = True\r\n"
+            b"// --8<-- [end:targetXname]\r\n"
+            b"\t// --8<-- [start:target.name]\r\n\tright = True\r\n"
+            b"\t// --8<-- [end:target.name]\r\n"
+        )
+        append_shortcode(
+            literal_source,
+            '{{< snippet path="snippets/literal-dot.py" region="target.name" lang="python" >}}',
+        )
+        literal_output = temporary_root / "literal-dot" / "output"
+        build(literal_source, literal_output)
+        literal_page = (
+            literal_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        _, literal_code = snippet_code(literal_page, occurrence=1)
+        if literal_code != "right = True\n":
+            raise AssertionError(f"dotted region did not match literally: {literal_code!r}")
+
+        embedded_source = copied_source(temporary_root, "embedded-marker")
+        embedded_asset = embedded_source / "assets/snippets/embedded-marker.py"
+        embedded_code = (
+            'start_text = "--8<-- [start:not-a-marker]"\n'
+            "middle = True\n"
+            'end_text = "--8<-- [end:not-a-marker]"\n'
+        )
+        embedded_asset.write_text(embedded_code, encoding="utf-8")
+        append_shortcode(
+            embedded_source,
+            '{{< snippet path="snippets/embedded-marker.py" lang="python" >}}',
+        )
+        embedded_output = temporary_root / "embedded-marker" / "output"
+        build(embedded_source, embedded_output)
+        embedded_page = (
+            embedded_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        _, rendered_embedded_code = snippet_code(embedded_page, occurrence=1)
+        if rendered_embedded_code != embedded_code:
+            raise AssertionError(
+                "whole-file rendering changed marker-shaped source text: "
+                f"{rendered_embedded_code!r}"
+            )
+
+        escaping_source = copied_source(temporary_root, "escaping")
+        escaping_asset = escaping_source / "assets/snippets/escaping.txt"
+        escaping_code = (
+            '<script>alert("snippet")</script>\n'
+            '</code><img src=x onerror="alert(1)">\n'
+            'symbols = "& \' quoted"\n'
+        )
+        escaping_asset.write_text(escaping_code, encoding="utf-8")
+        append_shortcode(
+            escaping_source,
+            '{{< snippet path="snippets/escaping.txt" lang="text" >}}',
+        )
+        escaping_output = temporary_root / "escaping" / "output"
+        build(escaping_source, escaping_output)
+        escaping_page = (
+            escaping_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        escaping_fragment, rendered_escaping_code = snippet_code(
+            escaping_page, occurrence=1
+        )
+        if rendered_escaping_code != escaping_code:
+            raise AssertionError("highlighting changed HTML-significant source text")
+        if "<script>" in escaping_fragment or "<img " in escaping_fragment:
+            raise AssertionError("highlighted source created an executable HTML element")
+
+        mounted_source = copied_source(temporary_root, "mounted-source")
+        mounted_directory = mounted_source / "mounted-examples"
+        mounted_directory.mkdir()
+        mounted_asset = mounted_directory / "authoritative.py"
+        mounted_asset.write_text("mounted_value = 1\n", encoding="utf-8")
+        config = mounted_source / "config.toml"
+        config.write_text(
+            config.read_text(encoding="utf-8")
+            + """
+
+[module]
+  [[module.mounts]]
+    source = "assets"
+    target = "assets"
+  [[module.mounts]]
+    source = "mounted-examples"
+    target = "assets/snippets/mounted"
+""",
+            encoding="utf-8",
+        )
+        mounted_shortcode = (
+            '{{< snippet path="snippets/mounted/authoritative.py" lang="python" >}}'
+        )
+        append_shortcode(mounted_source, mounted_shortcode)
+        mounted_lesson = mounted_source / LESSON_PATH
+        mounted_markdown = mounted_lesson.read_text(encoding="utf-8")
+        mounted_output = temporary_root / "mounted-source" / "output"
+        build(mounted_source, mounted_output)
+        mounted_page_path = mounted_output / "lessons/01-measurement-basics/index.html"
+        _, mounted_code = snippet_code(
+            mounted_page_path.read_text(encoding="utf-8"), occurrence=1
+        )
+        if mounted_code != "mounted_value = 1\n":
+            raise AssertionError("explicit Hugo assets mount did not resolve")
+        mounted_asset.write_text("mounted_value = 2\n", encoding="utf-8")
+        build(mounted_source, mounted_output)
+        _, rebuilt_mounted_code = snippet_code(
+            mounted_page_path.read_text(encoding="utf-8"), occurrence=1
+        )
+        if rebuilt_mounted_code != "mounted_value = 2\n":
+            raise AssertionError("rebuilt snippet did not follow its mounted source")
+        if mounted_lesson.read_text(encoding="utf-8") != mounted_markdown:
+            raise AssertionError("mounted-source rebuild unexpectedly changed Markdown")
 
         require_failure(
             temporary_root,
@@ -155,6 +274,18 @@ def main() -> None:
             '{{< snippet path="../config.toml" >}}',
             "must be a relative asset path",
         )
+        for name, unsafe_path in (
+            ("absolute-path", "/snippets/measurement.py"),
+            ("leading-dot-segment", "./snippets/measurement.py"),
+            ("nested-dot-segment", "snippets/./measurement.py"),
+            ("backslash-path", "snippets\\measurement.py"),
+        ):
+            require_failure(
+                temporary_root,
+                name,
+                f'{{{{< snippet path="{unsafe_path}" >}}}}',
+                "must be a relative asset path",
+            )
         require_failure(
             temporary_root,
             "missing-resource",
@@ -166,6 +297,12 @@ def main() -> None:
             "invalid-region",
             '{{< snippet path="snippets/measurement.py" region="bad.*" >}}',
             "must match [A-Za-z0-9][A-Za-z0-9._-]*",
+        )
+        require_failure(
+            temporary_root,
+            "unsafe-language",
+            '{{< snippet path="snippets/measurement.py" lang=`text" onmouseover="alert(1)` >}}',
+            "must match [A-Za-z0-9][A-Za-z0-9_+.-]*",
         )
         require_failure(
             temporary_root,
@@ -182,6 +319,40 @@ def main() -> None:
                 "# --8<-- [start:target]\nfirst = 1\n# --8<-- [end:target]\n"
                 "# --8<-- [start:target]\nsecond = 2\n# --8<-- [end:target]\n"
             ),
+        )
+        require_failure(
+            temporary_root,
+            "confusable-dot-region",
+            '{{< snippet path="snippets/confusable-dot-region.py" region="target.name" >}}',
+            "requires exactly one start marker and one end marker",
+            asset=(
+                "# --8<-- [start:targetXname]\nwrong = True\n"
+                "# --8<-- [end:targetXname]\n"
+            ),
+        )
+        require_failure(
+            temporary_root,
+            "inline-region-marker",
+            '{{< snippet path="snippets/inline-region-marker.py" region="target" >}}',
+            "requires exactly one start marker and one end marker",
+            asset=(
+                'start_text = "--8<-- [start:target]"\nvalue = True\n'
+                'end_text = "--8<-- [end:target]"\n'
+            ),
+        )
+        require_failure(
+            temporary_root,
+            "binary-source",
+            '{{< snippet path="snippets/binary-source.py" >}}',
+            "contains a NUL byte",
+            asset=b"value = 1\x00\x01\n",
+        )
+        require_failure(
+            temporary_root,
+            "oversized-source",
+            '{{< snippet path="snippets/oversized-source.py" >}}',
+            "exceeds the 262144-byte output limit",
+            asset="x" * 262145,
         )
         require_failure(
             temporary_root,

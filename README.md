@@ -147,6 +147,10 @@ def run():
     # --8<-- [end:quickstart-watch]
 ```
 
+Markers may be bare or use one of these marker-only comment wrappers: `#`,
+`//`, `;`, `--`, `%`, `!`, `'`, `/* ... */`, or `<!-- ... -->`. A marker-shaped
+string or inline comment remains ordinary source and is not removed.
+
 Omit `region` to include the whole file; recognized marker lines are never
 shown. `path` is resolved only through Hugo's assets namespace. A project can
 store files directly below `assets/` or mount an existing source directory
@@ -164,7 +168,10 @@ without copying it:
 
 When declaring mounts, retain every assets source the project already uses.
 The build fails for a missing or unsafe path, an invalid region name, missing
-or duplicate markers, or an end marker that precedes its start marker.
+or duplicate markers, or an end marker that precedes its start marker. Lexer
+names are restricted to letters, digits, `_`, `+`, `.`, and `-`. NUL-containing
+resources and selected output larger than 262,144 bytes are rejected as source
+authoring errors.
 
 ## Figures, tables, and cross-references
 
