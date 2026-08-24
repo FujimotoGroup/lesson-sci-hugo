@@ -1,8 +1,7 @@
 {{- $path := .Get "path" -}}
 {{- $region := .Get "region" -}}
 {{- $language := .Get "lang" | default "text" -}}
-{{- $markerPrefix := "(?:(?:#|//|;|--|%|!|'|/\\*|<!--)[ \\t]+)?" -}}
-{{- $markerSuffix := "(?:[ \\t]+(?:\\*/|-->))?" -}}
+{{- $lineMarkerPrefix := "(?:#|//|;|--|%|!|')" -}}
 {{- $valid := true -}}
 {{- $snippet := "" -}}
 {{- $languageMatches := findRE "^[A-Za-z0-9][A-Za-z0-9_+.-]*$" $language -}}
@@ -33,8 +32,12 @@
           {{- $valid = false -}}
         {{- else -}}
           {{- $literalRegion := replace . "." "\\." -}}
-          {{- $startPattern := printf "(?m)^[ \\t]*%s--8<--[ \\t]+\\[start:%s\\]%s[ \\t]*\\r?$" $markerPrefix $literalRegion $markerSuffix -}}
-          {{- $endPattern := printf "(?m)^[ \\t]*%s--8<--[ \\t]+\\[end:%s\\]%s[ \\t]*\\r?$" $markerPrefix $literalRegion $markerSuffix -}}
+          {{- $startToken := printf "\\[start:%s\\]" $literalRegion -}}
+          {{- $endToken := printf "\\[end:%s\\]" $literalRegion -}}
+          {{- $startForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $startToken $lineMarkerPrefix $startToken $startToken $startToken -}}
+          {{- $endForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $endToken $lineMarkerPrefix $endToken $endToken $endToken -}}
+          {{- $startPattern := printf "(?m)^[ \\t]*%s[ \\t]*\\r?$" $startForm -}}
+          {{- $endPattern := printf "(?m)^[ \\t]*%s[ \\t]*\\r?$" $endForm -}}
           {{- $starts := findRE $startPattern $snippet -}}
           {{- $ends := findRE $endPattern $snippet -}}
           {{- if or (ne (len $starts) 1) (ne (len $ends) 1) -}}
@@ -64,7 +67,9 @@
   {{- end -}}
 {{- end -}}
 {{- if $valid -}}
-  {{- $markerPattern := printf "(?m)^[ \\t]*%s--8<--[ \\t]+\\[(?:start|end):[A-Za-z0-9][A-Za-z0-9._-]*\\]%s[ \\t]*(?:\\r?\\n|$)" $markerPrefix $markerSuffix -}}
+  {{- $anyToken := "\\[(?:start|end):[A-Za-z0-9][A-Za-z0-9._-]*\\]" -}}
+  {{- $anyMarkerForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $anyToken $lineMarkerPrefix $anyToken $anyToken $anyToken -}}
+  {{- $markerPattern := printf "(?m)^[ \\t]*%s[ \\t]*(?:\\r?\\n|$)" $anyMarkerForm -}}
   {{- $snippet = replaceRE $markerPattern "" $snippet -}}
   {{- if gt (len $snippet) 262144 -}}
     {{- errorf "snippet selection from %q for %q exceeds the 262144-byte output limit" $path .Page.RelPermalink -}}

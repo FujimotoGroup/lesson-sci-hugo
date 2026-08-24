@@ -193,6 +193,69 @@ def main() -> None:
                 f"{rendered_embedded_code!r}"
             )
 
+        wrapper_source = copied_source(temporary_root, "marker-wrappers")
+        wrapper_asset = wrapper_source / "assets/snippets/marker-wrappers.txt"
+        wrappers = (
+            ("bare", "", ""),
+            ("hash", "# ", ""),
+            ("slash", "// ", ""),
+            ("semicolon", "; ", ""),
+            ("dash", "-- ", ""),
+            ("percent", "% ", ""),
+            ("bang", "! ", ""),
+            ("quote", "' ", ""),
+            ("block", "/* ", " */"),
+            ("html", "<!-- ", " -->"),
+        )
+        wrapper_lines: list[str] = []
+        for name, prefix, suffix in wrappers:
+            wrapper_lines.extend(
+                (
+                    f"{prefix}--8<-- [start:{name}]{suffix}",
+                    f"{name}_value = True",
+                    f"{prefix}--8<-- [end:{name}]{suffix}",
+                )
+            )
+            append_shortcode(
+                wrapper_source,
+                f'{{{{< snippet path="snippets/marker-wrappers.txt" region="{name}" >}}}}',
+            )
+        wrapper_asset.write_text("\n".join(wrapper_lines) + "\n", encoding="utf-8")
+        wrapper_output = temporary_root / "marker-wrappers" / "output"
+        build(wrapper_source, wrapper_output)
+        wrapper_page = (
+            wrapper_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        for index, (name, _, _) in enumerate(wrappers, start=1):
+            _, wrapper_code = snippet_code(wrapper_page, occurrence=index)
+            if wrapper_code != f"{name}_value = True\n":
+                raise AssertionError(f"documented marker wrapper {name!r} failed")
+
+        malformed_source = copied_source(temporary_root, "malformed-wrappers")
+        malformed_asset = malformed_source / "assets/snippets/malformed-wrappers.txt"
+        malformed_code = (
+            "/* --8<-- [start:mixed] -->\n"
+            "mixed_value = True\n"
+            "/* --8<-- [end:mixed] -->\n"
+            "/* --8<-- [start:missing-c-close]\n"
+            "--8<-- [end:stray-c-close] */\n"
+            "<!-- --8<-- [start:missing-html-close]\n"
+            "--8<-- [end:stray-html-close] -->\n"
+        )
+        malformed_asset.write_text(malformed_code, encoding="utf-8")
+        append_shortcode(
+            malformed_source,
+            '{{< snippet path="snippets/malformed-wrappers.txt" >}}',
+        )
+        malformed_output = temporary_root / "malformed-wrappers" / "output"
+        build(malformed_source, malformed_output)
+        malformed_page = (
+            malformed_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        _, rendered_malformed_code = snippet_code(malformed_page, occurrence=1)
+        if rendered_malformed_code != malformed_code:
+            raise AssertionError("whole-file rendering removed malformed wrapper text")
+
         escaping_source = copied_source(temporary_root, "escaping")
         escaping_asset = escaping_source / "assets/snippets/escaping.txt"
         escaping_code = (
@@ -354,6 +417,40 @@ def main() -> None:
             "exceeds the 262144-byte output limit",
             asset="x" * 262145,
         )
+        for name, marker_source in (
+            (
+                "mixed-wrapper",
+                "/* --8<-- [start:target] -->\nvalue = True\n"
+                "/* --8<-- [end:target] -->\n",
+            ),
+            (
+                "missing-c-close",
+                "/* --8<-- [start:target]\nvalue = True\n"
+                "/* --8<-- [end:target]\n",
+            ),
+            (
+                "stray-c-close",
+                "--8<-- [start:target] */\nvalue = True\n"
+                "--8<-- [end:target] */\n",
+            ),
+            (
+                "missing-html-close",
+                "<!-- --8<-- [start:target]\nvalue = True\n"
+                "<!-- --8<-- [end:target]\n",
+            ),
+            (
+                "stray-html-close",
+                "--8<-- [start:target] -->\nvalue = True\n"
+                "--8<-- [end:target] -->\n",
+            ),
+        ):
+            require_failure(
+                temporary_root,
+                name,
+                f'{{{{< snippet path="snippets/{name}.py" region="target" >}}}}',
+                "requires exactly one start marker and one end marker",
+                asset=marker_source,
+            )
         require_failure(
             temporary_root,
             "reversed-region",
