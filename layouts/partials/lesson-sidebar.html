@@ -1,5 +1,5 @@
-<aside class="lesson-sidebar" aria-label="Lesson一覧">
-  <a class="lesson-sidebar__title" href="{{ with .Site.GetPage "section" "lessons" }}{{ .RelPermalink }}{{ end }}">Learning path</a>
+<aside class="lesson-sidebar" aria-label="{{ i18n "lessonList" }}">
+  <a class="lesson-sidebar__title" href="{{ with .Site.GetPage "section" "lessons" }}{{ .RelPermalink }}{{ end }}">{{ i18n "learningPath" }}</a>
   <ol>
     {{- $current := .RelPermalink -}}
     {{- with .Site.GetPage "section" "lessons" -}}

@@ -1,6 +1,6 @@
 <footer class="site-footer">
   <div class="site-footer__inner">
     <p><strong>{{ .Site.Title }}</strong><br>{{ .Site.Params.tagline }}</p>
-    <p>Built with <a href="https://gohugo.io/">Hugo</a> and lesson-sci-hugo.</p>
+    <p>{{ i18n "builtWith" (dict "Hugo" ("<a href=\"https://gohugo.io/\">Hugo</a>" | safeHTML)) | safeHTML }}</p>
   </div>
 </footer>

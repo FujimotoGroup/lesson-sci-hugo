@@ -1,4 +1,4 @@
 <details class="lesson-details lesson-details--hint">
-  <summary>{{ .Get "title" | default "ヒントを見る" }}</summary>
+  <summary>{{ .Get "title" | default (i18n "showHint") }}</summary>
   <div>{{ .Inner | markdownify }}</div>
 </details>

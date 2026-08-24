@@ -19,6 +19,11 @@ Then open the URL printed by Hugo and navigate to:
 
 The minimum supported Hugo version is 0.92.2.
 
+The theme ships Japanese and English interface translations. Configure Hugo's
+`languages` map and provide translated content using any of Hugo's supported
+multilingual content layouts. When the current page has translations, the
+header links directly to each corresponding page.
+
 ## Use in a site
 
 Add the repository as a theme or Git submodule, then select it in the site
@@ -32,6 +37,22 @@ homeEyebrow = "Science, one runnable step at a time"
 tagline = "Runnable lessons for scientific software"
 description = "Learn by predicting, running, and interpreting."
 math = true
+```
+
+A bilingual configuration can define language-specific labels and menus:
+
+```toml
+defaultContentLanguage = "ja"
+
+[languages]
+  [languages.ja]
+    languageCode = "ja-jp"
+    languageName = "日本語"
+    weight = 1
+  [languages.en]
+    languageCode = "en-us"
+    languageName = "English"
+    weight = 2
 ```
 
 The header includes a light/dark mode switch. The initial mode follows the
@@ -98,6 +119,15 @@ even when they appear before the target figure or table.
 
 The theme intentionally keeps lesson content in Markdown. Project-specific
 code execution and validation should remain in the consuming repository's CI.
+
+## Verify the theme
+
+Build the bilingual example and check its localized navigation and lesson
+components:
+
+```bash
+python3 tests/check_example.py
+```
 
 ## License
 

@@ -3,6 +3,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
   <meta name="description" content="{{ .Params.summary | default .Site.Params.description }}">
+  {{- range .AllTranslations }}
+    <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}">
+  {{- end }}
   {{- $lightThemeColor := .Site.Params.themeColor | default "#143d8f" -}}
   {{- $darkThemeColor := .Site.Params.themeDarkColor | default "#0b1219" -}}
   <meta name="theme-color" content="{{ $lightThemeColor }}" data-light="{{ $lightThemeColor }}" data-dark="{{ $darkThemeColor }}">

@@ -14,11 +14,33 @@ disableKinds = ["taxonomy", "term", "RSS"]
   loadGoogleFonts = true
   math = true
 
-[menu]
-  [[menu.main]]
-    name = "Lessons"
-    url = "/lessons/"
+[languages]
+  [languages.ja]
+    languageCode = "ja-jp"
+    languageName = "日本語"
+    title = "Science Lesson Kit"
     weight = 1
+    [languages.ja.params]
+      homeEyebrow = "Science, one runnable step at a time"
+      tagline = "予想し、動かし、科学的に読み解く"
+      description = "実行可能なコードを使った科学Lessonのサンプル"
+    [[languages.ja.menu.main]]
+      name = "Lesson"
+      pageRef = "/lessons"
+      weight = 1
+  [languages.en]
+    languageCode = "en-us"
+    languageName = "English"
+    title = "Science Lesson Kit"
+    weight = 2
+    [languages.en.params]
+      homeEyebrow = "Science, one runnable step at a time"
+      tagline = "Predict, run, and interpret"
+      description = "A sample science course built around runnable code"
+    [[languages.en.menu.main]]
+      name = "Lessons"
+      pageRef = "/lessons"
+      weight = 1
 
 [markup]
   [markup.highlight]

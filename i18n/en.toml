@@ -1,0 +1,128 @@
+[skipToContent]
+other = "Skip to content"
+
+[homeLinkAria]
+other = "{{ .Title }} home"
+
+[mainNavigation]
+other = "Main navigation"
+
+[languageNavigation]
+other = "Language"
+
+[repository]
+other = "Repository"
+
+[switchToDark]
+other = "Switch to dark mode"
+
+[switchToLight]
+other = "Switch to light mode"
+
+[copyCode]
+other = "Copy code"
+
+[copy]
+other = "Copy"
+
+[copied]
+other = "Copied"
+
+[lesson]
+other = "Lesson {{ .Number }}"
+
+[lessons]
+other = "Lessons"
+
+[startLessons]
+other = "Start the lessons"
+
+[courseMap]
+other = "Course map"
+
+[homeLessonsHeading]
+other = "Run small experiments and understand the mechanism"
+
+[allLessons]
+other = "All lessons"
+
+[open]
+other = "Open"
+
+[openLesson]
+other = "Open lesson"
+
+[course]
+other = "Course"
+
+[guide]
+other = "Guide"
+
+[learningPath]
+other = "Learning path"
+
+[lessonList]
+other = "Lesson list"
+
+[lessonTableOfContents]
+other = "Lesson table of contents"
+
+[thisLesson]
+other = "This lesson"
+
+[breadcrumb]
+other = "Breadcrumb"
+
+[home]
+other = "Home"
+
+[lessonPagination]
+other = "Lesson navigation"
+
+[previousLesson]
+other = "Previous lesson"
+
+[nextLesson]
+other = "Next lesson"
+
+[defaultDuration]
+other = "20 min"
+
+[objectives]
+other = "Objectives"
+
+[prerequisites]
+other = "Prerequisites"
+
+[goal]
+other = "Goal"
+
+[predict]
+other = "Predict"
+
+[tryIt]
+other = "Try it"
+
+[showHint]
+other = "Show hint"
+
+[showSolution]
+other = "Show solution"
+
+[expectedOutput]
+other = "Expected output"
+
+[openCode]
+other = "Open the complete code"
+
+[figureLabel]
+other = "Figure {{ .Number }}"
+
+[tableLabel]
+other = "Table {{ .Number }}"
+
+[referenceFallback]
+other = "Reference"
+
+[builtWith]
+other = "Built with {{ .Hugo }} and lesson-sci-hugo."

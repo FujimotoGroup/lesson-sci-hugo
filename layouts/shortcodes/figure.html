@@ -5,7 +5,7 @@
 {{- $number := add (default 0 (.Page.Scratch.Get "figureCounter")) 1 -}}
 {{- .Page.Scratch.Set "figureCounter" $number -}}
 {{- $id := default (printf "figure-%d" $number) (.Get "id") | anchorize -}}
-{{- $label := printf "図%d" $number -}}
+{{- $label := i18n "figureLabel" (dict "Number" $number) -}}
 {{- .Page.Scratch.SetInMap "crossReferenceLabels" $id $label -}}
 <figure id="{{ $id }}" class="numbered-content numbered-figure" data-reference-label="{{ $label }}">
   {{- with .Get "link" }}<a href="{{ . | safeURL }}">{{ end -}}

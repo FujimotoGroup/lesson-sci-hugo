@@ -1,6 +1,6 @@
 {{ define "main" }}
   <section class="section-intro">
-    <p class="eyebrow">Learning path</p>
+    <p class="eyebrow">{{ i18n "learningPath" }}</p>
     <h1>{{ .Title }}</h1>
     <div class="lead prose">{{ .Content }}</div>
   </section>
@@ -13,7 +13,7 @@
             <strong>{{ .Title }}</strong>
             <span>{{ .Params.summary | default .Summary }}</span>
           </span>
-          <span class="course-list__duration">{{ .Params.duration | default "20 min" }}</span>
+          <span class="course-list__duration">{{ .Params.duration | default (i18n "defaultDuration") }}</span>
         </a>
       </li>
     {{ end }}
