@@ -129,6 +129,13 @@ components:
 python3 tests/check_example.py
 ```
 
+Set `HUGO_BIN` to exercise a specific supported Hugo binary, including the
+documented minimum version:
+
+```bash
+HUGO_BIN=/path/to/hugo-0.92.2 python3 tests/check_example.py
+```
+
 ## License
 
 MIT

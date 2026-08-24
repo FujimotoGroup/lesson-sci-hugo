@@ -124,5 +124,8 @@ other = "Table {{ .Number }}"
 [referenceFallback]
 other = "Reference"
 
-[builtWith]
-other = "Built with {{ .Hugo }} and lesson-sci-hugo."
+[builtWithBefore]
+other = "Built with"
+
+[builtWithAfter]
+other = "and lesson-sci-hugo."

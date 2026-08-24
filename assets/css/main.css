@@ -1133,10 +1133,16 @@ a {
 
   .site-header__inner {
     min-height: 64px;
+    gap: 0.65rem;
+  }
+
+  .brand > span:last-child,
+  .site-nav__repo {
+    display: none;
   }
 
   .site-nav {
-    gap: 0.65rem;
+    gap: 0.45rem;
   }
 
   .brand__mark {

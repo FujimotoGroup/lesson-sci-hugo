@@ -124,5 +124,8 @@ other = "表{{ .Number }}"
 [referenceFallback]
 other = "参照"
 
-[builtWith]
-other = "{{ .Hugo }} と lesson-sci-hugo で構築しています。"
+[builtWithBefore]
+other = "lesson-sci-hugo は"
+
+[builtWithAfter]
+other = "で構築しています。"
