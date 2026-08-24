@@ -77,8 +77,10 @@ def main() -> None:
             'href="/en/" hreflang="en" lang="en"',
             "Lessonを始める",
             'data-copy-label="コピー"',
+            'data-copied-label="コピーしました"',
             'data-copy-aria-label="コードをコピー"',
             'aria-label="メインナビゲーション"',
+            'data-switch-to-dark="ダークモードに切り替える"',
             'data-switch-to-light="ライトモードに切り替える"',
         )
         require(
@@ -88,8 +90,10 @@ def main() -> None:
             'href="/" hreflang="ja" lang="ja"',
             "Start the lessons",
             'data-copy-label="Copy"',
+            'data-copied-label="Copied"',
             'data-copy-aria-label="Copy code"',
             'aria-label="Main navigation"',
+            'data-switch-to-dark="Switch to dark mode"',
             'data-switch-to-light="Switch to light mode"',
         )
         require(
@@ -114,19 +118,30 @@ def main() -> None:
         require(
             japanese_switcher,
             'aria-label="言語"',
-            'href="/lessons/01-measurement-basics/" hreflang="ja" lang="ja" aria-current="page"',
-            'href="/en/lessons/01-measurement-basics/" hreflang="en" lang="en"',
+            'href="/lessons/01-measurement-basics/" hreflang="ja" lang="ja" aria-label="日本語" aria-current="page"',
+            'href="/en/lessons/01-measurement-basics/" hreflang="en" lang="en" aria-label="English"',
         )
         require(
             english_switcher,
             'aria-label="Language"',
-            'href="/lessons/01-measurement-basics/" hreflang="ja" lang="ja"',
-            'href="/en/lessons/01-measurement-basics/" hreflang="en" lang="en" aria-current="page"',
+            'href="/lessons/01-measurement-basics/" hreflang="ja" lang="ja" aria-label="日本語"',
+            'href="/en/lessons/01-measurement-basics/" hreflang="en" lang="en" aria-label="English" aria-current="page"',
         )
         if japanese_switcher.count("<a ") != 2:
             raise AssertionError("Japanese lesson switcher has unrelated links")
         if english_switcher.count("<a ") != 2:
             raise AssertionError("English lesson switcher has unrelated links")
+
+        require(
+            japanese_lesson,
+            'class="site-nav__repo" href="https://github.com/FujimotoGroup/lesson-sci-hugo" aria-label="リポジトリ"',
+            '<span class="language-switcher__short" aria-hidden="true">JA</span>',
+        )
+        require(
+            english_lesson,
+            'class="site-nav__repo" href="https://github.com/FujimotoGroup/lesson-sci-hugo" aria-label="Repository"',
+            '<span class="language-switcher__short" aria-hidden="true">EN</span>',
+        )
 
         code_copy_script = (REPOSITORY_ROOT / "assets/js/code-copy.js").read_text(
             encoding="utf-8",

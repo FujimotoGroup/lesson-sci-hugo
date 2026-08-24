@@ -241,6 +241,10 @@ a {
   background: var(--accent-solid);
 }
 
+.language-switcher__short {
+  display: none;
+}
+
 .theme-toggle {
   display: grid;
   width: 38px;
@@ -1136,9 +1140,19 @@ a {
     gap: 0.65rem;
   }
 
-  .brand > span:last-child,
-  .site-nav__repo {
-    display: none;
+  .brand {
+    min-width: 0;
+  }
+
+  .brand > span:last-child {
+    min-width: 0;
+    max-width: 4.5rem;
+  }
+
+  .brand strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .site-nav {
@@ -1154,6 +1168,15 @@ a {
   .site-nav__repo {
     padding: 0.35rem 0.55rem;
     font-size: 0.7rem;
+  }
+
+  .site-nav__repo-label,
+  .language-switcher__long {
+    display: none;
+  }
+
+  .language-switcher__short {
+    display: inline;
   }
 
   .language-switcher a {

@@ -11,11 +11,11 @@
       {{ range .Site.Menus.main }}
         <a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>
       {{ end }}
-      {{ with .Site.Params.repository }}<a class="site-nav__repo" href="{{ . }}">{{ i18n "repository" }} ↗</a>{{ end }}
+      {{ with .Site.Params.repository }}<a class="site-nav__repo" href="{{ . }}" aria-label="{{ i18n "repository" }}"><span class="site-nav__repo-label">{{ i18n "repository" }}</span> <span aria-hidden="true">↗</span></a>{{ end }}
       {{- if gt (len .AllTranslations) 1 -}}
         <div class="language-switcher" role="group" aria-label="{{ i18n "languageNavigation" }}">
           {{- range .AllTranslations -}}
-            <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Lang }}" lang="{{ .Language.Lang }}"{{ if eq .Language.Lang $.Language.Lang }} aria-current="page"{{ end }}>{{ .Language.LanguageName | default .Language.Lang }}</a>
+            <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Lang }}" lang="{{ .Language.Lang }}" aria-label="{{ .Language.LanguageName | default .Language.Lang }}"{{ if eq .Language.Lang $.Language.Lang }} aria-current="page"{{ end }}><span class="language-switcher__long">{{ .Language.LanguageName | default .Language.Lang }}</span><span class="language-switcher__short" aria-hidden="true">{{ upper .Language.Lang }}</span></a>
           {{- end -}}
         </div>
       {{- end -}}

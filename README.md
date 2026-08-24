@@ -127,6 +127,7 @@ components:
 
 ```bash
 python3 tests/check_example.py
+node tests/check_scripts.js
 ```
 
 Set `HUGO_BIN` to exercise a specific supported Hugo binary, including the
