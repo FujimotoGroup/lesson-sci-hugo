@@ -1,0 +1,60 @@
+{{- $path := .Get "path" -}}
+{{- $region := .Get "region" -}}
+{{- $language := .Get "lang" | default "text" -}}
+{{- $valid := true -}}
+{{- $snippet := "" -}}
+{{- if not $path -}}
+  {{- errorf "snippet shortcode in %q requires a path" .Page.RelPermalink -}}
+  {{- $valid = false -}}
+{{- else if or (hasPrefix $path "/") (in (split $path "/") "..") (in (split $path "/") ".") (in $path "\\") -}}
+  {{- errorf "snippet path %q in %q must be a relative asset path without '.' or '..' segments or backslashes" $path .Page.RelPermalink -}}
+  {{- $valid = false -}}
+{{- else -}}
+  {{- $resource := resources.Get $path -}}
+  {{- if not $resource -}}
+    {{- errorf "snippet resource %q was not found in Hugo assets for %q" $path .Page.RelPermalink -}}
+    {{- $valid = false -}}
+  {{- else -}}
+    {{- $snippet = $resource.Content -}}
+    {{- with $region -}}
+      {{- $regionMatches := findRE "^[A-Za-z0-9][A-Za-z0-9._-]*$" . -}}
+      {{- if ne (len $regionMatches) 1 -}}
+        {{- errorf "snippet region %q in %q must match [A-Za-z0-9][A-Za-z0-9._-]*" . $path -}}
+        {{- $valid = false -}}
+      {{- else -}}
+        {{- $startPattern := printf "(?m)^[^\\r\\n]*--8<--[ \\t]+\\[start:%s\\][^\\r\\n]*\\r?$" . -}}
+        {{- $endPattern := printf "(?m)^[^\\r\\n]*--8<--[ \\t]+\\[end:%s\\][^\\r\\n]*\\r?$" . -}}
+        {{- $starts := findRE $startPattern $snippet -}}
+        {{- $ends := findRE $endPattern $snippet -}}
+        {{- if or (ne (len $starts) 1) (ne (len $ends) 1) -}}
+          {{- errorf "snippet region %q in %q requires exactly one start marker and one end marker" . $path -}}
+          {{- $valid = false -}}
+        {{- else -}}
+          {{- $start := index $starts 0 -}}
+          {{- $end := index $ends 0 -}}
+          {{- $afterStart := index (split $snippet $start) 1 -}}
+          {{- if not (in $afterStart $end) -}}
+            {{- errorf "snippet region %q in %q has its end marker before its start marker" . $path -}}
+            {{- $valid = false -}}
+          {{- else -}}
+            {{- $indent := replaceRE "^([ \\t]*).*" "$1" $start -}}
+            {{- $snippet = index (split $afterStart $end) 0 -}}
+            {{- $snippet = replace $snippet "\r\n" "\n" -}}
+            {{- $snippet = replaceRE "^\n" "" $snippet -}}
+            {{- $snippet = replaceRE "\n$" "" $snippet -}}
+            {{- if $indent -}}
+              {{- $snippet = replaceRE (printf "(?m)^%s" $indent) "" $snippet -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $valid -}}
+  {{- $markerPattern := "(?m)^[^\\r\\n]*--8<--[ \\t]+\\[(?:start|end):[A-Za-z0-9][A-Za-z0-9._-]*\\][^\\r\\n]*(?:\\r?\\n|$)" -}}
+  {{- $snippet = replaceRE $markerPattern "" $snippet -}}
+  <div class="source-snippet" data-snippet-path="{{ $path }}"{{ with $region }} data-snippet-region="{{ . }}"{{ end }}>
+    {{- highlight (printf "%s\n" $snippet) $language "" -}}
+  </div>
+{{- end -}}

@@ -4,7 +4,7 @@ licenselink = "https://github.com/FujimotoGroup/lesson-sci-hugo/blob/main/LICENS
 description = "A Hugo theme for progressive, code-centered science lessons."
 homepage = "https://github.com/FujimotoGroup/lesson-sci-hugo"
 tags = ["documentation", "education", "science", "lessons", "responsive"]
-features = ["lesson navigation", "math", "code copy", "table of contents"]
+features = ["lesson navigation", "math", "code copy", "source snippets", "table of contents"]
 min_version = "0.92.2"
 
 [author]

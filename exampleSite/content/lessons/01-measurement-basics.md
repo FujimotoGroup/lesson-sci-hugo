@@ -36,9 +36,7 @@ objectives:
 | 5 | 9.8 |
 {{< /table >}}
 
-```python
-measurements = [10.1, 9.9, 10.0, 10.2, 9.8]
-```
+{{< snippet path="snippets/measurement.py" region="measurement-values" lang="python" >}}
 
 {{< predict >}}
 平均は `10.0 cm` より大きいでしょうか、小さいでしょうか、それとも同じでしょうか。

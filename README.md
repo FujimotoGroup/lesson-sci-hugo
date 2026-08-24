@@ -119,6 +119,52 @@ page cannot receive a valid position in the canonical sequence.
 - `code-link`: link to a mounted or static code file while respecting the
   site's `baseURL` (for example,
   `{{</* code-link path="code/lesson-01.py" label="Open the code" */>}}`).
+- `snippet`: include a whole source file or one named region from Hugo assets
+  and highlight it as code.
+
+## Source snippets
+
+Keep runnable source authoritative by loading it through the `snippet`
+shortcode instead of copying code into Markdown:
+
+```go-html-template
+{{</* snippet
+  path="snippets/examples/quickstart.py"
+  region="quickstart-watch"
+  lang="python"
+*/>}}
+```
+
+Use marker-only lines around a named region. The marker's leading indentation
+is removed from selected lines that share it, so a region inside a function
+renders without an unwanted leading indent:
+
+```python
+def run():
+    # --8<-- [start:quickstart-watch]
+    result = measure()
+    print(result)
+    # --8<-- [end:quickstart-watch]
+```
+
+Omit `region` to include the whole file; recognized marker lines are never
+shown. `path` is resolved only through Hugo's assets namespace. A project can
+store files directly below `assets/` or mount an existing source directory
+without copying it:
+
+```toml
+[module]
+  [[module.mounts]]
+    source = "assets"
+    target = "assets"
+  [[module.mounts]]
+    source = "examples"
+    target = "assets/snippets/examples"
+```
+
+When declaring mounts, retain every assets source the project already uses.
+The build fails for a missing or unsafe path, an invalid region name, missing
+or duplicate markers, or an end marker that precedes its start marker.
 
 ## Figures, tables, and cross-references
 
@@ -158,6 +204,7 @@ components:
 ```bash
 python3 tests/check_example.py
 node tests/check_scripts.js
+python3 tests/check_snippet.py
 ```
 
 Set `HUGO_BIN` to exercise a specific supported Hugo binary, including the
@@ -165,6 +212,7 @@ documented minimum version:
 
 ```bash
 HUGO_BIN=/path/to/hugo-0.92.2 python3 tests/check_example.py
+HUGO_BIN=/path/to/hugo-0.92.2 python3 tests/check_snippet.py
 ```
 
 ## License
