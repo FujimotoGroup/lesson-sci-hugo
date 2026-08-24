@@ -1,14 +1,18 @@
 {{ define "main" }}
+  {{- $root := .Site.GetPage "section" "lessons" -}}
+  {{- $pages := partial "lessons/pages.html" $root -}}
+  {{- $position := partial "lessons/position.html" (dict "Page" . "Pages" $pages) -}}
   <article class="lesson">
     <nav class="breadcrumb" aria-label="{{ i18n "breadcrumb" }}">
       <a href="{{ .Site.Home.RelPermalink }}">{{ i18n "home" }}</a>
       <span aria-hidden="true">/</span>
-      {{ with .Site.GetPage "section" "lessons" }}<a href="{{ .RelPermalink }}">{{ i18n "lessons" }}</a>{{ end }}
+      <a href="{{ $root.RelPermalink }}">{{ i18n "lessons" }}</a>
+      {{- partial "lessons/breadcrumb-ancestors.html" (dict "Page" .Parent "Root" $root) -}}
     </nav>
 
     <header class="lesson-header">
       <div class="lesson-header__topline">
-        <span class="lesson-number"><span>{{ i18n "lesson" (dict "Number" .Params.lesson) }}</span></span>
+        <span class="lesson-number"><span>{{ i18n "lesson" (dict "Number" (add $position 1)) }}</span></span>
         <span class="lesson-duration">{{ .Params.duration | default (i18n "defaultDuration") }}</span>
       </div>
       <h1>{{ .Title }}</h1>
@@ -21,18 +25,22 @@
     </div>
 
     <nav class="lesson-pagination" aria-label="{{ i18n "lessonPagination" }}">
-      {{ with .PrevInSection }}
-        <a class="lesson-pagination__prev" href="{{ .RelPermalink }}">
-          <span>← {{ i18n "previousLesson" }}</span>
-          <strong>{{ .Title }}</strong>
-        </a>
-      {{ end }}
-      {{ with .NextInSection }}
-        <a class="lesson-pagination__next" href="{{ .RelPermalink }}">
-          <span>{{ i18n "nextLesson" }} →</span>
-          <strong>{{ .Title }}</strong>
-        </a>
-      {{ end }}
+      {{- if gt $position 0 -}}
+        {{- with index $pages (sub $position 1) -}}
+          <a class="lesson-pagination__prev" href="{{ .RelPermalink }}">
+            <span>← {{ i18n "previousLesson" }}</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{- end -}}
+      {{- end -}}
+      {{- if and (ge $position 0) (lt (add $position 1) (len $pages)) -}}
+        {{- with index $pages (add $position 1) -}}
+          <a class="lesson-pagination__next" href="{{ .RelPermalink }}">
+            <span>{{ i18n "nextLesson" }} →</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{- end -}}
+      {{- end -}}
     </nav>
   </article>
 {{ end }}

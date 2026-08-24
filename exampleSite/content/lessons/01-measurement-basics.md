@@ -1,7 +1,6 @@
 ---
 title: "測定値の中心とばらつき"
 linkTitle: "測定値の中心とばらつき"
-lesson: 1
 weight: 1
 duration: "20 min"
 toc: true

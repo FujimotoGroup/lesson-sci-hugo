@@ -1,0 +1,8 @@
+{{- $position := -1 -}}
+{{- $current := .Page.RelPermalink -}}
+{{- range $index, $page := .Pages -}}
+  {{- if eq $page.RelPermalink $current -}}
+    {{- $position = $index -}}
+  {{- end -}}
+{{- end -}}
+{{- return $position -}}

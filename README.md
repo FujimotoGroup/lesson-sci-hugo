@@ -65,7 +65,6 @@ Lesson pages live below `content/lessons/` and use ordinary front matter:
 ```yaml
 ---
 title: "Measurement basics"
-lesson: 1
 weight: 1
 duration: "20 min"
 toc: true
@@ -77,6 +76,28 @@ objectives:
   - "Interpret its output"
 ---
 ```
+
+Lessons may be placed directly below `content/lessons/` or grouped into any
+number of nested branch bundles. Give each chapter an `_index.md` with its own
+`weight`, then use page `weight` values to order lessons within that chapter:
+
+```text
+content/lessons/
+├── _index.md
+├── 01-measurement-basics.md
+├── 01-foundations/
+│   ├── _index.md
+│   └── 02-record-observations.md
+└── 02-analysis/
+    ├── _index.md
+    └── 03-compare-results.md
+```
+
+The theme walks this tree depth first, sorting the children of every level by
+`weight`. Only regular lesson pages receive numbers; chapter pages do not.
+The same generated sequence drives the course list, sidebar, lesson heading,
+and previous/next links, including links that cross chapter boundaries. Do not
+add a manual `lesson` parameter.
 
 ## Lesson shortcodes
 

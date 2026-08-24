@@ -1,0 +1,11 @@
+{{- $page := .Page -}}
+{{- $root := .Root -}}
+{{- if and $page (ne $page.RelPermalink $root.RelPermalink) -}}
+  {{- with $page.Parent -}}
+    {{- if ne .RelPermalink $root.RelPermalink -}}
+      {{- partial "lessons/breadcrumb-ancestors.html" (dict "Page" . "Root" $root) -}}
+    {{- end -}}
+  {{- end -}}
+  <span aria-hidden="true">/</span>
+  <a href="{{ $page.RelPermalink }}">{{ $page.LinkTitle }}</a>
+{{- end -}}

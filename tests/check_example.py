@@ -27,6 +27,15 @@ def require(page: str, *fragments: str) -> None:
             raise AssertionError(f"rendered page is missing {fragment!r}")
 
 
+def require_order(page: str, *fragments: str) -> None:
+    position = -1
+    for fragment in fragments:
+        next_position = page.find(fragment, position + 1)
+        if next_position < 0:
+            raise AssertionError(f"rendered page is missing ordered fragment {fragment!r}")
+        position = next_position
+
+
 def language_switcher(page: str) -> str:
     match = re.search(r'<div class="language-switcher".*?</div>', page)
     if match is None:
@@ -68,6 +77,15 @@ def main() -> None:
         english_lesson = read_page(
             output_root,
             "en/lessons/01-measurement-basics/index.html",
+        )
+        english_lesson_list = read_page(output_root, "en/lessons/index.html")
+        english_record_lesson = read_page(
+            output_root,
+            "en/lessons/01-foundations/02-record-observations/index.html",
+        )
+        english_compare_lesson = read_page(
+            output_root,
+            "en/lessons/02-analysis/03-compare-results/index.html",
         )
 
         require(
@@ -112,6 +130,39 @@ def main() -> None:
             "Show hint",
             "Expected output",
         )
+        require(
+            english_lesson_list,
+            '<li class="course-list__chapter">',
+            '<h2>Observation foundations</h2>',
+            '<h2>Compare results</h2>',
+            '<ol class="course-list__nested">',
+        )
+        require_order(
+            english_lesson_list,
+            '<span class="course-list__index">01</span>',
+            '<span class="course-list__index">02</span>',
+            '<span class="course-list__index">03</span>',
+        )
+        if english_lesson_list.count('class="course-list__index"') != 3:
+            raise AssertionError("lesson index does not contain exactly three numbered pages")
+        require(
+            english_record_lesson,
+            '<span class="lesson-sidebar__chapter-title">Observation foundations</span>',
+            '<span class="lesson-sidebar__chapter-title">Compare results</span>',
+            '<span class="lesson-number"><span>Lesson 2</span></span>',
+            '<a href="/en/lessons/01-foundations/">Observation foundations</a>',
+            'class="lesson-pagination__prev" href="/en/lessons/01-measurement-basics/"',
+            'class="lesson-pagination__next" href="/en/lessons/02-analysis/03-compare-results/"',
+            'href="/en/lessons/01-foundations/02-record-observations/" aria-current="page"',
+        )
+        require(
+            english_compare_lesson,
+            '<span class="lesson-number"><span>Lesson 3</span></span>',
+            '<a href="/en/lessons/02-analysis/">Compare results</a>',
+            'class="lesson-pagination__prev" href="/en/lessons/01-foundations/02-record-observations/"',
+        )
+        if 'class="lesson-pagination__next"' in english_compare_lesson:
+            raise AssertionError("last nested lesson renders a next link")
 
         japanese_switcher = language_switcher(japanese_lesson)
         english_switcher = language_switcher(english_lesson)
@@ -169,6 +220,14 @@ def main() -> None:
             raise AssertionError("single-language page renders a language switcher")
         if 'hreflang="en"' in japanese_only_home:
             raise AssertionError("single-language page links to disabled English content")
+
+        lesson_sources = [REPOSITORY_ROOT / "archetypes/lesson.md"]
+        lesson_sources.extend(
+            (REPOSITORY_ROOT / "exampleSite/content/lessons").rglob("*.md")
+        )
+        for source in lesson_sources:
+            if re.search(r"^lesson\s*:", source.read_text(encoding="utf-8"), re.MULTILINE):
+                raise AssertionError(f"manual lesson number remains in {source}")
 
 
 if __name__ == "__main__":

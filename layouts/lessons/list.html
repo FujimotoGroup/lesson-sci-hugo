@@ -4,18 +4,9 @@
     <h1>{{ .Title }}</h1>
     <div class="lead prose">{{ .Content }}</div>
   </section>
+  {{- $root := .Site.GetPage "section" "lessons" -}}
+  {{- $pages := partial "lessons/pages.html" $root -}}
   <ol class="course-list">
-    {{ range .Pages.ByWeight }}
-      <li>
-        <a href="{{ .RelPermalink }}">
-          <span class="course-list__index">{{ printf "%02d" (int .Params.lesson) }}</span>
-          <span class="course-list__body">
-            <strong>{{ .Title }}</strong>
-            <span>{{ .Params.summary | default .Summary }}</span>
-          </span>
-          <span class="course-list__duration">{{ .Params.duration | default (i18n "defaultDuration") }}</span>
-        </a>
-      </li>
-    {{ end }}
+    {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $pages) -}}
   </ol>
 {{ end }}

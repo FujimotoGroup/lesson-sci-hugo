@@ -475,9 +475,37 @@ a {
   list-style: none;
 }
 
-.course-list li {
+.course-list__lesson {
   margin: 0;
   border-bottom: 1px solid var(--line);
+}
+
+.course-list__chapter {
+  margin: 0;
+  list-style: none;
+}
+
+.course-list__chapter-header {
+  padding: 1.8rem 0.6rem 0.65rem;
+}
+
+.course-list__chapter-header h2 {
+  margin: 0;
+  color: var(--accent-ink);
+  font-size: 1.25rem;
+}
+
+.course-list__chapter-header p {
+  margin: 0.3rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+}
+
+.course-list__nested {
+  margin: 0;
+  padding: 0 0 0 1rem;
+  border-left: 1px solid var(--line);
+  list-style: none;
 }
 
 .course-list a {
@@ -554,19 +582,41 @@ a {
   text-decoration: none;
 }
 
-.lesson-sidebar ol {
+.lesson-sidebar__tree,
+.lesson-sidebar__tree ol {
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--line);
   list-style: none;
 }
 
-.lesson-sidebar li {
+.lesson-sidebar__tree {
+  border-top: 1px solid var(--line);
+}
+
+.lesson-sidebar__tree ol {
+  margin-left: 0.65rem;
+  border-left: 1px solid var(--line);
+}
+
+.lesson-sidebar__lesson {
   margin: 0;
   border-bottom: 1px solid var(--line);
 }
 
-.lesson-sidebar li a {
+.lesson-sidebar__chapter {
+  margin: 0;
+}
+
+.lesson-sidebar__chapter-title {
+  display: block;
+  padding: 0.9rem 0.45rem 0.35rem 0.65rem;
+  color: var(--accent-ink);
+  font-family: var(--serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.lesson-sidebar__lesson a {
   display: grid;
   padding: 0.7rem 0.45rem 0.7rem 0.65rem;
   grid-template-columns: 2rem 1fr;
@@ -578,7 +628,7 @@ a {
   transition: color 140ms ease, background-color 140ms ease;
 }
 
-.lesson-sidebar li a span {
+.lesson-sidebar__lesson a span {
   color: var(--ink-soft);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.7rem;
@@ -586,19 +636,19 @@ a {
   transition: color 140ms ease;
 }
 
-.lesson-sidebar li a:hover,
-.lesson-sidebar li a[aria-current="page"] {
+.lesson-sidebar__lesson a:hover,
+.lesson-sidebar__lesson a[aria-current="page"] {
   color: var(--accent-ink);
   background: linear-gradient(90deg, var(--sky-soft), transparent 92%);
 }
 
-.lesson-sidebar li a[aria-current="page"] {
+.lesson-sidebar__lesson a[aria-current="page"] {
   box-shadow: inset 2px 0 0 var(--blue);
   font-weight: 700;
 }
 
-.lesson-sidebar li a:hover span,
-.lesson-sidebar li a[aria-current="page"] span {
+.lesson-sidebar__lesson a:hover span,
+.lesson-sidebar__lesson a[aria-current="page"] span {
   color: var(--blue);
 }
 
@@ -1102,7 +1152,7 @@ a {
     border-bottom: 1px solid var(--line);
   }
 
-  .lesson-sidebar ol {
+  .lesson-sidebar > .lesson-sidebar__tree {
     display: flex;
     overflow-x: auto;
     border-right: 0;
@@ -1110,13 +1160,18 @@ a {
     gap: 0;
   }
 
-  .lesson-sidebar li {
+  .lesson-sidebar__tree > li {
     flex: 0 0 auto;
     border-right: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
   }
 
-  .lesson-sidebar li a {
+  .lesson-sidebar__tree ol {
+    margin-left: 0;
+    border-left: 0;
+  }
+
+  .lesson-sidebar__lesson a {
     max-width: 220px;
   }
 

@@ -1,0 +1,26 @@
+{{- $pages := .Pages -}}
+{{- range .Section.Pages.ByWeight -}}
+  {{- if .IsSection -}}
+    <li class="course-list__chapter">
+      <div class="course-list__chapter-header">
+        <h2>{{ .Title }}</h2>
+        {{- with .Params.summary }}<p>{{ . }}</p>{{ end -}}
+      </div>
+      <ol class="course-list__nested">
+        {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $pages) -}}
+      </ol>
+    </li>
+  {{- else -}}
+    {{- $position := partial "lessons/position.html" (dict "Page" . "Pages" $pages) -}}
+    <li class="course-list__lesson">
+      <a href="{{ .RelPermalink }}">
+        <span class="course-list__index">{{ printf "%02d" (add $position 1) }}</span>
+        <span class="course-list__body">
+          <strong>{{ .Title }}</strong>
+          <span>{{ .Params.summary | default .Summary }}</span>
+        </span>
+        <span class="course-list__duration">{{ .Params.duration | default (i18n "defaultDuration") }}</span>
+      </a>
+    </li>
+  {{- end -}}
+{{- end -}}

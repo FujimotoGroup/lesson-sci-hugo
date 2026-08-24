@@ -1,7 +1,6 @@
 ---
 title: "Center and spread of measurements"
 linkTitle: "Center and spread of measurements"
-lesson: 1
 weight: 1
 duration: "20 min"
 toc: true
