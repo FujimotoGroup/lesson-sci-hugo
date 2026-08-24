@@ -69,6 +69,33 @@ objectives:
   site's `baseURL` (for example,
   `{{</* code-link path="code/lesson-01.py" label="Open the code" */>}}`).
 
+## Figures, tables, and cross-references
+
+Figures and tables are numbered independently on each page. Give each item an
+`id`, then use `xref` to create a link whose text is resolved to labels such as
+`図1` or `表2`:
+
+```go-html-template
+本文から{{</* xref id="measurement-plot" */>}}を参照します。
+
+{{</* figure
+  id="measurement-plot"
+  src="images/measurement-plot.svg"
+  alt="測定値の分布"
+  caption="5回の測定値と平均"
+*/>}}
+
+{{</* table id="measurement-values" caption="5回の長さ測定値" */>}}
+| 測定回 | 長さ / cm |
+| ---: | ---: |
+| 1 | 10.1 |
+| 2 | 9.9 |
+{{</* /table */>}}
+```
+
+Use `label` on `xref` only when custom link text is needed. References work
+even when they appear before the target figure or table.
+
 The theme intentionally keeps lesson content in Markdown. Project-specific
 code execution and validation should remain in the consuming repository's CI.
 

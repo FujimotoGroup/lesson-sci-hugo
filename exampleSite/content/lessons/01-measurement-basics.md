@@ -25,6 +25,17 @@ objectives:
 ## 1. 測定データを用意する
 
 ある物体の長さを5回測り、次の値を得たとします。単位はcmです。
+各回の測定値を{{< xref id="measurement-values" >}}に示します。
+
+{{< table id="measurement-values" caption="5回の長さ測定値" >}}
+| 測定回 | 長さ / cm |
+| ---: | ---: |
+| 1 | 10.1 |
+| 2 | 9.9 |
+| 3 | 10.0 |
+| 4 | 10.2 |
+| 5 | 9.8 |
+{{< /table >}}
 
 ```python
 measurements = [10.1, 9.9, 10.0, 10.2, 9.8]

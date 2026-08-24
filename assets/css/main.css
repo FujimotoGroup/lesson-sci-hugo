@@ -799,12 +799,55 @@ a {
   border-left: 4px solid var(--sky);
 }
 
+.numbered-content {
+  margin: 2rem 0;
+  scroll-margin-top: 6rem;
+}
+
+.numbered-figure img {
+  margin: 0 auto;
+}
+
+.numbered-content__caption {
+  margin: 0.7rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.numbered-content__label {
+  margin-right: 0.65em;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.numbered-table .numbered-content__caption {
+  margin: 0 0 0.7rem;
+}
+
+.numbered-table__scroll {
+  overflow-x: auto;
+}
+
+.cross-reference {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 .prose table {
   display: block;
   width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
   font-size: 0.88rem;
+}
+
+.numbered-table table {
+  display: table;
+  min-width: 100%;
+  margin: 0;
+  overflow: visible;
 }
 
 .prose th,
@@ -1162,7 +1205,8 @@ a {
   }
 
   .lesson-block,
-  .lesson-meta {
+  .lesson-meta,
+  .numbered-content {
     break-inside: avoid;
     box-shadow: none;
   }
