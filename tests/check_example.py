@@ -44,6 +44,13 @@ def language_switcher(page: str) -> str:
     return match.group(0)
 
 
+def lesson_sidebar(page: str) -> str:
+    match = re.search(r'<aside class="lesson-sidebar".*?</aside>', page, re.DOTALL)
+    if match is None:
+        raise AssertionError("rendered lesson has no lesson sidebar")
+    return match.group(0)
+
+
 def build(
     output_root: Path,
     *,
@@ -113,6 +120,8 @@ This rendered page must not silently receive Lesson 0.
     diagnostic = result.stdout + result.stderr
     if "excluded from the canonical lesson sequence" not in diagnostic:
         raise AssertionError("unlisted lesson failure lacks its targeted diagnostic")
+    if "error calling add" in diagnostic:
+        raise AssertionError("unlisted lesson failure includes a secondary arithmetic error")
 
 
 def main() -> None:
@@ -285,6 +294,20 @@ def main() -> None:
             '<a href="/lessons/02-analysis/01-differences/">差を読む</a>',
             'class="lesson-pagination__next" href="/lessons/02-analysis/01-differences/01-compare-magnitude/"',
         )
+        for sidebar in (
+            lesson_sidebar(english_sign_lesson),
+            lesson_sidebar(japanese_sign_lesson),
+        ):
+            require_order(
+                sidebar,
+                "<span>01</span>",
+                "<span>02</span>",
+                "<span>03</span>",
+                "<span>04</span>",
+                "<span>05</span>",
+            )
+            if sidebar.count('<li class="lesson-sidebar__lesson">') != 5:
+                raise AssertionError("sidebar does not contain exactly five lessons")
 
         japanese_switcher = language_switcher(japanese_lesson)
         english_switcher = language_switcher(english_lesson)
