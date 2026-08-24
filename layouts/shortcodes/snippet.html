@@ -45,17 +45,31 @@
             {{- $valid = false -}}
           {{- else -}}
             {{- $start := index $starts 0 -}}
-            {{- $end := index $ends 0 -}}
-            {{- $afterStart := index (split $snippet $start) 1 -}}
-            {{- if not (in $afterStart $end) -}}
+            {{- $capturing := false -}}
+            {{- $completed := false -}}
+            {{- $orderValid := true -}}
+            {{- $selected := slice -}}
+            {{- range split $snippet "\n" -}}
+              {{- if gt (len (findRE $startPattern .)) 0 -}}
+                {{- $capturing = true -}}
+              {{- else if gt (len (findRE $endPattern .)) 0 -}}
+                {{- if not $capturing -}}
+                  {{- $orderValid = false -}}
+                {{- else -}}
+                  {{- $capturing = false -}}
+                  {{- $completed = true -}}
+                {{- end -}}
+              {{- else if $capturing -}}
+                {{- $selected = $selected | append . -}}
+              {{- end -}}
+            {{- end -}}
+            {{- if or (not $orderValid) (not $completed) -}}
               {{- errorf "snippet region %q in %q has its end marker before its start marker" . $path -}}
               {{- $valid = false -}}
             {{- else -}}
               {{- $indent := replaceRE "^([ \\t]*).*" "$1" $start -}}
-              {{- $snippet = index (split $afterStart $end) 0 -}}
+              {{- $snippet = delimit $selected "\n" -}}
               {{- $snippet = replace $snippet "\r\n" "\n" -}}
-              {{- $snippet = replaceRE "^\n" "" $snippet -}}
-              {{- $snippet = replaceRE "\n$" "" $snippet -}}
               {{- if $indent -}}
                 {{- $snippet = replaceRE (printf "(?m)^%s" $indent) "" $snippet -}}
               {{- end -}}

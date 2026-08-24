@@ -193,6 +193,35 @@ def main() -> None:
                 f"{rendered_embedded_code!r}"
             )
 
+        boundary_source = copied_source(temporary_root, "marker-boundary-strings")
+        boundary_asset = boundary_source / "assets/snippets/marker-boundary-strings.py"
+        boundary_asset.write_text(
+            'before = "    # --8<-- [start:target]"\n'
+            "    # --8<-- [start:target]\n"
+            '    inside = "    # --8<-- [end:target]"\n'
+            "    must_remain = True\n"
+            "    # --8<-- [end:target]\n",
+            encoding="utf-8",
+        )
+        append_shortcode(
+            boundary_source,
+            '{{< snippet path="snippets/marker-boundary-strings.py" region="target" lang="python" >}}',
+        )
+        boundary_output = temporary_root / "marker-boundary-strings" / "output"
+        build(boundary_source, boundary_output)
+        boundary_page = (
+            boundary_output / "lessons/01-measurement-basics/index.html"
+        ).read_text(encoding="utf-8")
+        _, boundary_code = snippet_code(boundary_page, occurrence=1)
+        expected_boundary_code = (
+            'inside = "    # --8<-- [end:target]"\n'
+            "must_remain = True\n"
+        )
+        if boundary_code != expected_boundary_code:
+            raise AssertionError(
+                f"marker-shaped strings changed extraction boundaries: {boundary_code!r}"
+            )
+
         wrapper_source = copied_source(temporary_root, "marker-wrappers")
         wrapper_asset = wrapper_source / "assets/snippets/marker-wrappers.txt"
         wrappers = (
