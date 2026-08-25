@@ -36,10 +36,29 @@ theme = "lesson-sci-hugo"
 homeEyebrow = "Science, one runnable step at a time"
 tagline = "Runnable lessons for scientific software"
 description = "Learn by predicting, running, and interpreting."
+repository = "https://github.com/FujimotoGroup/lesson-sci-hugo"
+themeColor = "#143d8f"
+themeDarkColor = "#0b1219"
+loadGoogleFonts = false
 math = true
 ```
 
-A bilingual configuration can define language-specific labels and menus:
+The theme recognizes these site parameters:
+
+| Parameter | Default | Effect |
+| --- | --- | --- |
+| `homeEyebrow` | not set | Adds a short eyebrow above the home-page title. |
+| `tagline` | not set | Adds supporting text below the site title in the header and footer. |
+| `description` | not set | Provides the fallback HTML meta description. |
+| `repository` | not set | Adds a localized repository link to the header. |
+| `themeColor` | `#143d8f` | Sets the light-mode browser chrome color. |
+| `themeDarkColor` | `#0b1219` | Sets the dark-mode browser chrome color. |
+| `loadGoogleFonts` | `false` | Loads Noto Sans JP and Noto Serif JP from Google Fonts when enabled. This makes requests to `fonts.googleapis.com` and `fonts.gstatic.com`. |
+| `math` | `false` | Enables MathJax 3 and loads it from `cdn.jsdelivr.net`. Leave this disabled for a site that does not need mathematical typesetting or must avoid that external request. |
+
+A bilingual configuration can define language-specific site metadata and
+menus. Interface labels come from the theme's Japanese and English i18n
+catalogs:
 
 ```toml
 defaultContentLanguage = "ja"
@@ -48,11 +67,29 @@ defaultContentLanguage = "ja"
   [languages.ja]
     languageCode = "ja-jp"
     languageName = "日本語"
+    title = "Science Lesson Kit"
     weight = 1
+    [languages.ja.params]
+      homeEyebrow = "Science, one runnable step at a time"
+      tagline = "予想し、動かし、科学的に読み解く"
+      description = "実行可能なコードを使った科学Lessonのサンプル"
+    [[languages.ja.menu.main]]
+      name = "Lesson"
+      pageRef = "/lessons"
+      weight = 1
   [languages.en]
     languageCode = "en-us"
     languageName = "English"
+    title = "Science Lesson Kit"
     weight = 2
+    [languages.en.params]
+      homeEyebrow = "Science, one runnable step at a time"
+      tagline = "Predict, run, and interpret"
+      description = "A sample science course built around runnable code"
+    [[languages.en.menu.main]]
+      name = "Lessons"
+      pageRef = "/lessons"
+      weight = 1
 ```
 
 The header includes a light/dark mode switch. The initial mode follows the
@@ -135,6 +172,15 @@ shortcode instead of copying code into Markdown:
 */>}}
 ```
 
+The shortcode arguments are:
+
+- `path` is required. It must be a relative Hugo asset path without a leading
+  slash, backslash, or `.` or `..` path segment.
+- `region` is optional. It must match
+  `[A-Za-z0-9][A-Za-z0-9._-]*`, and its marker pair must occur exactly once.
+- `lang` is optional and defaults to `text`. It must match
+  `[A-Za-z0-9][A-Za-z0-9_+.-]*`; the value is passed to Hugo's highlighter.
+
 Use marker-only lines around a named region. The marker's leading indentation
 is removed from selected lines that share it, so a region inside a function
 renders without an unwanted leading indent:
@@ -168,10 +214,9 @@ without copying it:
 
 When declaring mounts, retain every assets source the project already uses.
 The build fails for a missing or unsafe path, an invalid region name, missing
-or duplicate markers, or an end marker that precedes its start marker. Lexer
-names are restricted to letters, digits, `_`, `+`, `.`, and `-`. NUL-containing
-resources and selected output larger than 262,144 bytes are rejected as source
-authoring errors.
+or duplicate markers, or an end marker that precedes its start marker.
+NUL-containing resources and selected output larger than 262,144 bytes are
+rejected as source authoring errors.
 
 ## Figures, tables, and cross-references
 
