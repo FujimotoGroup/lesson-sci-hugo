@@ -1,0 +1,7 @@
+{{- $pages := partial "lessons/pages.html" . -}}
+{{- $scratch := newScratch -}}
+{{- $scratch.Set "positions" dict -}}
+{{- range $index, $page := $pages -}}
+  {{- $scratch.SetInMap "positions" $page.RelPermalink $index -}}
+{{- end -}}
+{{- return (dict "Pages" $pages "Positions" ($scratch.Get "positions")) -}}

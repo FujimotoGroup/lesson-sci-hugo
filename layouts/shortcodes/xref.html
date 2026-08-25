@@ -12,4 +12,4 @@
     {{- end -}}
   {{- end -}}
 {{- end -}}
-<a class="cross-reference" href="#{{ $target }}"{{ if not $customLabel }} data-cross-reference="{{ $target }}"{{ end }}>{{ default "参照" $label }}</a>
+<a class="cross-reference" href="#{{ $target }}"{{ if not $customLabel }} data-cross-reference="{{ $target }}"{{ end }}>{{ default (i18n "referenceFallback") $label }}</a>

@@ -1,15 +1,23 @@
 {{ define "main" }}
-  <article class="lesson">
-    <nav class="breadcrumb" aria-label="パンくずリスト">
-      <a href="{{ .Site.Home.RelPermalink }}">Home</a>
+  {{- $root := .Site.GetPage "section" "lessons" -}}
+  {{- $course := partial "lessons/context.html" $root -}}
+  {{- if not (isset $course.Positions .RelPermalink) -}}
+    {{- errorf "lesson page %q is rendered but excluded from the canonical lesson sequence; remove _build.list = 'never' or disable rendering" .RelPermalink -}}
+  {{- else -}}
+    {{- $pages := $course.Pages -}}
+    {{- $position := index $course.Positions .RelPermalink -}}
+    <article class="lesson">
+    <nav class="breadcrumb" aria-label="{{ i18n "breadcrumb" }}">
+      <a href="{{ .Site.Home.RelPermalink }}">{{ i18n "home" }}</a>
       <span aria-hidden="true">/</span>
-      {{ with .Site.GetPage "section" "lessons" }}<a href="{{ .RelPermalink }}">Lessons</a>{{ end }}
+      <a href="{{ $root.RelPermalink }}">{{ i18n "lessons" }}</a>
+      {{- partial "lessons/breadcrumb-ancestors.html" (dict "Page" .Parent "Root" $root) -}}
     </nav>
 
     <header class="lesson-header">
       <div class="lesson-header__topline">
-        <span class="lesson-number"><span>Lesson {{ .Params.lesson }}</span></span>
-        <span class="lesson-duration">{{ .Params.duration | default "20 min" }}</span>
+        <span class="lesson-number"><span>{{ i18n "lesson" (dict "Number" (add $position 1)) }}</span></span>
+        <span class="lesson-duration">{{ .Params.duration | default (i18n "defaultDuration") }}</span>
       </div>
       <h1>{{ .Title }}</h1>
       {{ with .Params.summary }}<p class="lead">{{ . }}</p>{{ end }}
@@ -20,19 +28,24 @@
       {{ .Content }}
     </div>
 
-    <nav class="lesson-pagination" aria-label="Lesson間の移動">
-      {{ with .PrevInSection }}
-        <a class="lesson-pagination__prev" href="{{ .RelPermalink }}">
-          <span>← 前のLesson</span>
-          <strong>{{ .Title }}</strong>
-        </a>
-      {{ end }}
-      {{ with .NextInSection }}
-        <a class="lesson-pagination__next" href="{{ .RelPermalink }}">
-          <span>次のLesson →</span>
-          <strong>{{ .Title }}</strong>
-        </a>
-      {{ end }}
+    <nav class="lesson-pagination" aria-label="{{ i18n "lessonPagination" }}">
+      {{- if gt $position 0 -}}
+        {{- with index $pages (sub $position 1) -}}
+          <a class="lesson-pagination__prev" href="{{ .RelPermalink }}">
+            <span>← {{ i18n "previousLesson" }}</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{- end -}}
+      {{- end -}}
+      {{- if and (ge $position 0) (lt (add $position 1) (len $pages)) -}}
+        {{- with index $pages (add $position 1) -}}
+          <a class="lesson-pagination__next" href="{{ .RelPermalink }}">
+            <span>{{ i18n "nextLesson" }} →</span>
+            <strong>{{ .Title }}</strong>
+          </a>
+        {{- end -}}
+      {{- end -}}
     </nav>
-  </article>
+    </article>
+  {{- end -}}
 {{ end }}

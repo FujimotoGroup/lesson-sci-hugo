@@ -1,0 +1,101 @@
+{{- $path := .Get "path" -}}
+{{- $region := .Get "region" -}}
+{{- $language := .Get "lang" | default "text" -}}
+{{- $lineMarkerPrefix := "(?:#|//|;|--|%|!|')" -}}
+{{- $valid := true -}}
+{{- $snippet := "" -}}
+{{- $languageMatches := findRE "^[A-Za-z0-9][A-Za-z0-9_+.-]*$" $language -}}
+{{- if ne (len $languageMatches) 1 -}}
+  {{- errorf "snippet language %q in %q must match [A-Za-z0-9][A-Za-z0-9_+.-]*" $language .Page.RelPermalink -}}
+  {{- $valid = false -}}
+{{- else if not $path -}}
+  {{- errorf "snippet shortcode in %q requires a path" .Page.RelPermalink -}}
+  {{- $valid = false -}}
+{{- else if or (hasPrefix $path "/") (in (split $path "/") "..") (in (split $path "/") ".") (in $path "\\") -}}
+  {{- errorf "snippet path %q in %q must be a relative asset path without '.' or '..' segments or backslashes" $path .Page.RelPermalink -}}
+  {{- $valid = false -}}
+{{- else -}}
+  {{- $resource := resources.Get $path -}}
+  {{- if not $resource -}}
+    {{- errorf "snippet resource %q was not found in Hugo assets for %q" $path .Page.RelPermalink -}}
+    {{- $valid = false -}}
+  {{- else -}}
+    {{- $snippet = $resource.Content -}}
+    {{- if in $snippet "\x00" -}}
+      {{- errorf "snippet resource %q for %q contains a NUL byte and is not a text source" $path .Page.RelPermalink -}}
+      {{- $valid = false -}}
+    {{- else -}}
+      {{- with $region -}}
+        {{- $regionMatches := findRE "^[A-Za-z0-9][A-Za-z0-9._-]*$" . -}}
+        {{- if ne (len $regionMatches) 1 -}}
+          {{- errorf "snippet region %q in %q must match [A-Za-z0-9][A-Za-z0-9._-]*" . $path -}}
+          {{- $valid = false -}}
+        {{- else -}}
+          {{- $literalRegion := replace . "." "\\." -}}
+          {{- $startToken := printf "\\[start:%s\\]" $literalRegion -}}
+          {{- $endToken := printf "\\[end:%s\\]" $literalRegion -}}
+          {{- $startForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $startToken $lineMarkerPrefix $startToken $startToken $startToken -}}
+          {{- $endForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $endToken $lineMarkerPrefix $endToken $endToken $endToken -}}
+          {{- $startPattern := printf "(?m)^[ \\t]*%s[ \\t]*\\r?$" $startForm -}}
+          {{- $endPattern := printf "(?m)^[ \\t]*%s[ \\t]*\\r?$" $endForm -}}
+          {{- $starts := findRE $startPattern $snippet -}}
+          {{- $ends := findRE $endPattern $snippet -}}
+          {{- if or (ne (len $starts) 1) (ne (len $ends) 1) -}}
+            {{- errorf "snippet region %q in %q requires exactly one start marker and one end marker" . $path -}}
+            {{- $valid = false -}}
+          {{- else -}}
+            {{- $start := index $starts 0 -}}
+            {{- $capturing := false -}}
+            {{- $completed := false -}}
+            {{- $orderValid := true -}}
+            {{- $selected := slice -}}
+            {{- range split $snippet "\n" -}}
+              {{- if gt (len (findRE $startPattern .)) 0 -}}
+                {{- $capturing = true -}}
+              {{- else if gt (len (findRE $endPattern .)) 0 -}}
+                {{- if not $capturing -}}
+                  {{- $orderValid = false -}}
+                {{- else -}}
+                  {{- $capturing = false -}}
+                  {{- $completed = true -}}
+                {{- end -}}
+              {{- else if $capturing -}}
+                {{- $selected = $selected | append . -}}
+              {{- end -}}
+            {{- end -}}
+            {{- if or (not $orderValid) (not $completed) -}}
+              {{- errorf "snippet region %q in %q has its end marker before its start marker" . $path -}}
+              {{- $valid = false -}}
+            {{- else -}}
+              {{- $indent := replaceRE "^([ \\t]*).*" "$1" $start -}}
+              {{- $snippet = delimit $selected "\n" -}}
+              {{- $snippet = replace $snippet "\r\n" "\n" -}}
+              {{- if $indent -}}
+                {{- $snippet = replaceRE (printf "(?m)^%s" $indent) "" $snippet -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $valid -}}
+  {{- $anyToken := "\\[(?:start|end):[A-Za-z0-9][A-Za-z0-9._-]*\\]" -}}
+  {{- $anyMarkerForm := printf "(?:--8<--[ \\t]+%s|%s[ \\t]+--8<--[ \\t]+%s|/\\*[ \\t]+--8<--[ \\t]+%s[ \\t]+\\*/|<!--[ \\t]+--8<--[ \\t]+%s[ \\t]+-->)" $anyToken $lineMarkerPrefix $anyToken $anyToken $anyToken -}}
+  {{- $markerPattern := printf "(?m)^[ \\t]*%s[ \\t]*(?:\\r?\\n|$)" $anyMarkerForm -}}
+  {{- $snippet = replaceRE $markerPattern "" $snippet -}}
+  {{- if gt (len $snippet) 262144 -}}
+    {{- errorf "snippet selection from %q for %q exceeds the 262144-byte output limit" $path .Page.RelPermalink -}}
+    {{- $valid = false -}}
+  {{- end -}}
+{{- end -}}
+{{- if $valid -}}
+  {{- $output := $snippet -}}
+  {{- if eq (len (findRE "\n$" $output)) 0 -}}
+    {{- $output = printf "%s\n" $output -}}
+  {{- end -}}
+  <div class="source-snippet" data-snippet-path="{{ $path }}"{{ with $region }} data-snippet-region="{{ . }}"{{ end }}>
+    {{- highlight $output $language "" -}}
+  </div>
+{{- end -}}

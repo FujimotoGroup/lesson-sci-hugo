@@ -10,8 +10,8 @@
 
   function applyTheme(theme) {
     var nextLabel = theme === "dark"
-      ? "ライトモードに切り替える"
-      : "ダークモードに切り替える";
+      ? toggle.getAttribute("data-switch-to-light")
+      : toggle.getAttribute("data-switch-to-dark");
 
     root.setAttribute("data-theme", theme);
     root.style.colorScheme = theme;

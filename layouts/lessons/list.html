@@ -1,21 +1,12 @@
 {{ define "main" }}
   <section class="section-intro">
-    <p class="eyebrow">Learning path</p>
+    <p class="eyebrow">{{ i18n "learningPath" }}</p>
     <h1>{{ .Title }}</h1>
     <div class="lead prose">{{ .Content }}</div>
   </section>
+  {{- $root := .Site.GetPage "section" "lessons" -}}
+  {{- $course := partial "lessons/context.html" $root -}}
   <ol class="course-list">
-    {{ range .Pages.ByWeight }}
-      <li>
-        <a href="{{ .RelPermalink }}">
-          <span class="course-list__index">{{ printf "%02d" (int .Params.lesson) }}</span>
-          <span class="course-list__body">
-            <strong>{{ .Title }}</strong>
-            <span>{{ .Params.summary | default .Summary }}</span>
-          </span>
-          <span class="course-list__duration">{{ .Params.duration | default "20 min" }}</span>
-        </a>
-      </li>
-    {{ end }}
+    {{- partial "lessons/course-tree.html" (dict "Section" . "Pages" $course.Pages "Positions" $course.Positions) -}}
   </ol>
 {{ end }}

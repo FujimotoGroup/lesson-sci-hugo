@@ -6,7 +6,7 @@
       <h1>{{ .Title }}</h1>
       <div class="hero__copy prose">{{ .Content }}</div>
       {{ with .Site.GetPage "section" "lessons" }}
-        <a class="button" href="{{ .RelPermalink }}">Lessonを始める <span aria-hidden="true">→</span></a>
+        <a class="button" href="{{ .RelPermalink }}">{{ i18n "startLessons" }} <span aria-hidden="true">→</span></a>
       {{ end }}
     </div>
     {{ if $figure }}
@@ -14,21 +14,23 @@
     {{ end }}
   </section>
   {{ with .Site.GetPage "section" "lessons" }}
+    {{- $course := partial "lessons/context.html" . -}}
     <section class="home-lessons" aria-labelledby="home-lessons-title">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Course map</p>
-          <h2 id="home-lessons-title">小さく動かして、仕組みを読む</h2>
+          <p class="eyebrow">{{ i18n "courseMap" }}</p>
+          <h2 id="home-lessons-title">{{ i18n "homeLessonsHeading" }}</h2>
         </div>
-        <a href="{{ .RelPermalink }}">すべてのLesson</a>
+        <a href="{{ .RelPermalink }}">{{ i18n "allLessons" }}</a>
       </div>
       <div class="lesson-grid">
-        {{ range first 3 .Pages.ByWeight }}
+        {{ range first 3 $course.Pages }}
+          {{- $position := index $course.Positions .RelPermalink -}}
           <a class="lesson-card" href="{{ .RelPermalink }}">
-            <span class="lesson-card__number">Lesson {{ .Params.lesson }}</span>
+            <span class="lesson-card__number">{{ i18n "lesson" (dict "Number" (add $position 1)) }}</span>
             <h3>{{ .Title }}</h3>
             <p>{{ .Params.summary | default .Summary }}</p>
-            <span class="lesson-card__meta">{{ .Params.duration | default "20 min" }} · 開く →</span>
+            <span class="lesson-card__meta">{{ .Params.duration | default (i18n "defaultDuration") }} · {{ i18n "open" }} →</span>
           </a>
         {{ end }}
       </div>

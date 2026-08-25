@@ -1,0 +1,131 @@
+[skipToContent]
+other = "本文へ移動"
+
+[homeLinkAria]
+other = "{{ .Title }} ホーム"
+
+[mainNavigation]
+other = "メインナビゲーション"
+
+[languageNavigation]
+other = "言語"
+
+[repository]
+other = "リポジトリ"
+
+[switchToDark]
+other = "ダークモードに切り替える"
+
+[switchToLight]
+other = "ライトモードに切り替える"
+
+[copyCode]
+other = "コードをコピー"
+
+[copy]
+other = "コピー"
+
+[copied]
+other = "コピーしました"
+
+[lesson]
+other = "Lesson {{ .Number }}"
+
+[lessons]
+other = "Lesson"
+
+[startLessons]
+other = "Lessonを始める"
+
+[courseMap]
+other = "コースマップ"
+
+[homeLessonsHeading]
+other = "小さく動かして、仕組みを読む"
+
+[allLessons]
+other = "すべてのLesson"
+
+[open]
+other = "開く"
+
+[openLesson]
+other = "Lessonを開く"
+
+[course]
+other = "コース"
+
+[guide]
+other = "ガイド"
+
+[learningPath]
+other = "学習経路"
+
+[lessonList]
+other = "Lesson一覧"
+
+[lessonTableOfContents]
+other = "このLessonの目次"
+
+[thisLesson]
+other = "このLesson"
+
+[breadcrumb]
+other = "パンくずリスト"
+
+[home]
+other = "ホーム"
+
+[lessonPagination]
+other = "Lesson間の移動"
+
+[previousLesson]
+other = "前のLesson"
+
+[nextLesson]
+other = "次のLesson"
+
+[defaultDuration]
+other = "20分"
+
+[objectives]
+other = "このLessonの到達点"
+
+[prerequisites]
+other = "前提"
+
+[goal]
+other = "目標"
+
+[predict]
+other = "予想"
+
+[tryIt]
+other = "試してみる"
+
+[showHint]
+other = "ヒントを見る"
+
+[showSolution]
+other = "解答を確認する"
+
+[expectedOutput]
+other = "期待する出力"
+
+[openCode]
+other = "完成コードを開く"
+
+[figureLabel]
+other = "図{{ .Number }}"
+
+[tableLabel]
+other = "表{{ .Number }}"
+
+[referenceFallback]
+other = "参照"
+
+[builtWithBefore]
+other = "lesson-sci-hugo は"
+
+[builtWithAfter]
+other = "で構築しています。"

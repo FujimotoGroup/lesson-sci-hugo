@@ -1,18 +1,33 @@
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ .Site.Title }} ホーム">
+    <a class="brand" href="{{ .Site.Home.RelPermalink }}" aria-label="{{ i18n "homeLinkAria" (dict "Title" .Site.Title) }}">
       <span class="brand__mark" aria-hidden="true">∑</span>
       <span>
         <strong>{{ .Site.Title }}</strong>
         {{ with .Site.Params.tagline }}<small>{{ . }}</small>{{ end }}
       </span>
     </a>
-    <nav class="site-nav" aria-label="メインナビゲーション">
+    <nav class="site-nav" aria-label="{{ i18n "mainNavigation" }}">
       {{ range .Site.Menus.main }}
         <a href="{{ .URL | relURL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>
       {{ end }}
-      {{ with .Site.Params.repository }}<a class="site-nav__repo" href="{{ . }}">Repository ↗</a>{{ end }}
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="ダークモードに切り替える" aria-pressed="false">
+      {{ with .Site.Params.repository }}<a class="site-nav__repo" href="{{ . }}" aria-label="{{ i18n "repository" }}"><span class="site-nav__repo-label">{{ i18n "repository" }}</span> <span aria-hidden="true">↗</span></a>{{ end }}
+      {{- if gt (len .AllTranslations) 1 -}}
+        <div class="language-switcher" role="group" aria-label="{{ i18n "languageNavigation" }}">
+          {{- range .AllTranslations -}}
+            <a href="{{ .RelPermalink }}" hreflang="{{ .Language.Lang }}" lang="{{ .Language.Lang }}" aria-label="{{ .Language.LanguageName | default .Language.Lang }}"{{ if eq .Language.Lang $.Language.Lang }} aria-current="page"{{ end }}><span class="language-switcher__long">{{ .Language.LanguageName | default .Language.Lang }}</span><span class="language-switcher__short" aria-hidden="true">{{ upper .Language.Lang }}</span></a>
+          {{- end -}}
+        </div>
+      {{- end -}}
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        data-switch-to-dark="{{ i18n "switchToDark" }}"
+        data-switch-to-light="{{ i18n "switchToLight" }}"
+        aria-label="{{ i18n "switchToDark" }}"
+        aria-pressed="false"
+      >
         <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M20.2 15.7A8.5 8.5 0 0 1 8.3 3.8 8.5 8.5 0 1 0 20.2 15.7Z"/>
         </svg>
