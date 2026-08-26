@@ -882,6 +882,18 @@ a {
   margin: 0 auto;
 }
 
+.numbered-figure__image--dark {
+  display: none;
+}
+
+:root[data-theme="dark"] .numbered-figure__image--light {
+  display: none;
+}
+
+:root[data-theme="dark"] .numbered-figure__image--dark {
+  display: block;
+}
+
 .numbered-content__caption {
   margin: 0.7rem 0 0;
   color: var(--ink-soft);
@@ -1325,6 +1337,14 @@ a {
   .numbered-content {
     break-inside: avoid;
     box-shadow: none;
+  }
+
+  .numbered-figure__image--light {
+    display: block !important;
+  }
+
+  .numbered-figure__image--dark {
+    display: none !important;
   }
 }
 

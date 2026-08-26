@@ -230,6 +230,7 @@ Figures and tables are numbered independently on each page. Give each item an
 {{</* figure
   id="measurement-plot"
   src="images/measurement-plot.svg"
+  dark-src="images/measurement-plot-dark.svg"
   alt="測定値の分布"
   caption="5回の測定値と平均"
 */>}}
@@ -243,7 +244,10 @@ Figures and tables are numbered independently on each page. Give each item an
 ```
 
 Use `label` on `xref` only when custom link text is needed. References work
-even when they appear before the target figure or table.
+even when they appear before the target figure or table. The optional
+`dark-src` image replaces `src` when dark mode is active; use `dark-alt` only
+when the dark variant needs different alternative text. Light mode artwork is
+used when printing.
 
 The theme intentionally keeps lesson content in Markdown. Project-specific
 code execution and validation should remain in the consuming repository's CI.

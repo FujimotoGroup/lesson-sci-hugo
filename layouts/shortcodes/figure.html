@@ -2,6 +2,9 @@
 {{- if not $src -}}
   {{- errorf "figure shortcode requires a src: %s" .Position -}}
 {{- end -}}
+{{- $darkSrc := .Get "dark-src" -}}
+{{- $alt := .Get "alt" -}}
+{{- $darkAlt := default $alt (.Get "dark-alt") -}}
 {{- $number := add (default 0 (.Page.Scratch.Get "figureCounter")) 1 -}}
 {{- .Page.Scratch.Set "figureCounter" $number -}}
 {{- $id := default (printf "figure-%d" $number) (.Get "id") | anchorize -}}
@@ -9,7 +12,12 @@
 {{- .Page.Scratch.SetInMap "crossReferenceLabels" $id $label -}}
 <figure id="{{ $id }}" class="numbered-content numbered-figure" data-reference-label="{{ $label }}">
   {{- with .Get "link" }}<a href="{{ . | safeURL }}">{{ end -}}
-  <img src="{{ $src | relURL }}" alt="{{ .Get "alt" }}" loading="{{ default "lazy" (.Get "loading") }}"{{ with .Get "width" }} width="{{ . }}"{{ end }}{{ with .Get "height" }} height="{{ . }}"{{ end }}>
+  {{- if $darkSrc -}}
+  <img class="numbered-figure__image numbered-figure__image--light" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="{{ default "lazy" (.Get "loading") }}"{{ with .Get "width" }} width="{{ . }}"{{ end }}{{ with .Get "height" }} height="{{ . }}"{{ end }}>
+  <img class="numbered-figure__image numbered-figure__image--dark" src="{{ $darkSrc | relURL }}" alt="{{ $darkAlt }}" loading="{{ default "lazy" (.Get "loading") }}"{{ with .Get "width" }} width="{{ . }}"{{ end }}{{ with .Get "height" }} height="{{ . }}"{{ end }}>
+  {{- else -}}
+  <img class="numbered-figure__image" src="{{ $src | relURL }}" alt="{{ $alt }}" loading="{{ default "lazy" (.Get "loading") }}"{{ with .Get "width" }} width="{{ . }}"{{ end }}{{ with .Get "height" }} height="{{ . }}"{{ end }}>
+  {{- end -}}
   {{- with .Get "link" }}</a>{{ end }}
   <figcaption class="numbered-content__caption">
     <span class="numbered-content__label">{{ $label }}</span>
