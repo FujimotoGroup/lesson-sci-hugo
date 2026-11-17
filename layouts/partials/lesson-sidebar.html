@@ -1,10 +1,14 @@
 <aside class="lesson-sidebar" aria-label="{{ i18n "lessonList" }}">
   {{- $current := .RelPermalink -}}
+  {{- $toc := "" -}}
+  {{- if .Params.toc -}}
+    {{- $toc = .TableOfContents | replaceRE `<li><a href="#[^"]*">(ページ移動|Continue)</a></li>` "" -}}
+  {{- end -}}
   {{- with .Site.GetPage "section" "lessons" -}}
     {{- $course := partial "lessons/context.html" . -}}
     <a class="lesson-sidebar__title" href="{{ .RelPermalink }}">{{ i18n "learningPath" }}</a>
     <ol class="lesson-sidebar__tree">
-      {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $course.Pages "Positions" $course.Positions "Current" $current) -}}
+      {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $course.Pages "Positions" $course.Positions "Current" $current "Toc" $toc) -}}
     </ol>
   {{- end -}}
 </aside>

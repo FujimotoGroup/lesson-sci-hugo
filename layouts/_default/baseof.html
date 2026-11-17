@@ -5,6 +5,7 @@
     data-copy-label="{{ i18n "copy" }}"
     data-copied-label="{{ i18n "copied" }}"
     data-copy-aria-label="{{ i18n "copyCode" }}"
+    {{- with .Site.Params.signals }} data-signals="{{ . | jsonify }}"{{ end }}
   >
     <a class="skip-link" href="#main-content">{{ i18n "skipToContent" }}</a>
     {{- partial "header.html" . -}}
@@ -16,12 +17,6 @@
       <main id="main-content" class="main-content" tabindex="-1">
         {{- block "main" . }}{{ end -}}
       </main>
-      {{- if and $isLesson .Params.toc -}}
-        <aside class="page-toc" aria-label="{{ i18n "lessonTableOfContents" }}">
-          <p class="page-toc__title">{{ i18n "thisLesson" }}</p>
-          {{ .TableOfContents }}
-        </aside>
-      {{- end -}}
     </div>
     {{- partial "footer.html" . -}}
     {{- $themeScript := resources.Get "js/theme-toggle.js" | minify | fingerprint -}}

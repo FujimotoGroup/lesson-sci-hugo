@@ -168,7 +168,7 @@ def main() -> None:
             '<html lang="ja">',
             '<link rel="alternate" hreflang="en" href="http://example.org/en/">',
             'href="/en/" hreflang="en" lang="en"',
-            "Lessonを始める",
+            "レッスンを始める",
             'data-copy-label="コピー"',
             'data-copied-label="コピーしました"',
             'data-copy-aria-label="コードをコピー"',
@@ -209,7 +209,7 @@ def main() -> None:
         require(
             japanese_lesson,
             'href="/en/lessons/01-measurement-basics/"',
-            "このLessonの到達点",
+            "このレッスンの到達点",
             "表1",
             "ヒントを見る",
             "期待する出力",
@@ -289,7 +289,7 @@ def main() -> None:
         require(
             japanese_sign_lesson,
             '<span class="lesson-sidebar__chapter-title">差を読む</span>',
-            '<span class="lesson-number"><span>Lesson 3</span></span>',
+            '<span class="lesson-number"><span>レッスン3</span></span>',
             '<a href="/lessons/02-analysis/">比較する</a>',
             '<a href="/lessons/02-analysis/01-differences/">差を読む</a>',
             'class="lesson-pagination__next" href="/lessons/02-analysis/01-differences/01-compare-magnitude/"',
@@ -300,11 +300,11 @@ def main() -> None:
         ):
             require_order(
                 sidebar,
-                "<span>01</span>",
-                "<span>02</span>",
-                "<span>03</span>",
-                "<span>04</span>",
-                "<span>05</span>",
+                "<span>1</span>",
+                "<span>2</span>",
+                "<span>3</span>",
+                "<span>4</span>",
+                "<span>5</span>",
             )
             if sidebar.count('<li class="lesson-sidebar__lesson">') != 5:
                 raise AssertionError("sidebar does not contain exactly five lessons")
