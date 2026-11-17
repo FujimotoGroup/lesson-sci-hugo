@@ -1,21 +1,26 @@
 {{- $pages := .Pages -}}
 {{- $positions := .Positions -}}
 {{- $current := .Current -}}
+{{- $toc := .Toc -}}
 {{- range .Section.Pages.ByWeight -}}
   {{- if .IsSection -}}
     <li class="lesson-sidebar__chapter">
       <span class="lesson-sidebar__chapter-title">{{ .LinkTitle }}</span>
       <ol>
-        {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $pages "Positions" $positions "Current" $current) -}}
+        {{- partial "lessons/sidebar-tree.html" (dict "Section" . "Pages" $pages "Positions" $positions "Current" $current "Toc" $toc) -}}
       </ol>
     </li>
   {{- else -}}
     {{- $position := index $positions .RelPermalink -}}
+    {{- $isCurrent := eq .RelPermalink $current -}}
     <li class="lesson-sidebar__lesson">
-      <a href="{{ .RelPermalink }}"{{ if eq .RelPermalink $current }} aria-current="page"{{ end }}>
-        <span>{{ printf "%02d" (add $position 1) }}</span>
+      <a href="{{ .RelPermalink }}"{{ if $isCurrent }} aria-current="page"{{ end }}>
+        <span>{{ add $position 1 }}</span>
         {{ .LinkTitle }}
       </a>
+      {{- if and $isCurrent $toc }}
+        <div class="lesson-sidebar__toc" aria-label="{{ i18n "lessonTableOfContents" }}">{{ $toc | safeHTML }}</div>
+      {{- end }}
     </li>
   {{- end -}}
 {{- end -}}

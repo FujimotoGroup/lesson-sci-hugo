@@ -29,13 +29,13 @@ other = "コピー"
 other = "コピーしました"
 
 [lesson]
-other = "Lesson {{ .Number }}"
+other = "レッスン{{ .Number }}"
 
 [lessons]
-other = "Lesson"
+other = "レッスン"
 
 [startLessons]
-other = "Lessonを始める"
+other = "レッスンを始める"
 
 [courseMap]
 other = "コースマップ"
@@ -44,13 +44,13 @@ other = "コースマップ"
 other = "小さく動かして、仕組みを読む"
 
 [allLessons]
-other = "すべてのLesson"
+other = "すべてのレッスン"
 
 [open]
 other = "開く"
 
 [openLesson]
-other = "Lessonを開く"
+other = "レッスンを開く"
 
 [course]
 other = "コース"
@@ -62,13 +62,13 @@ other = "ガイド"
 other = "学習経路"
 
 [lessonList]
-other = "Lesson一覧"
+other = "レッスン一覧"
 
 [lessonTableOfContents]
-other = "このLessonの目次"
+other = "このレッスンの目次"
 
 [thisLesson]
-other = "このLesson"
+other = "このレッスン"
 
 [breadcrumb]
 other = "パンくずリスト"
@@ -77,19 +77,19 @@ other = "パンくずリスト"
 other = "ホーム"
 
 [lessonPagination]
-other = "Lesson間の移動"
+other = "レッスン間の移動"
 
 [previousLesson]
-other = "前のLesson"
+other = "前のレッスン"
 
 [nextLesson]
-other = "次のLesson"
+other = "次のレッスン"
 
 [defaultDuration]
 other = "20分"
 
 [objectives]
-other = "このLessonの到達点"
+other = "このレッスンの到達点"
 
 [prerequisites]
 other = "前提"
